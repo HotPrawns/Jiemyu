@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="8" height="7" tilewidth="32" tileheight="32" backgroundcolor="#ffffff" nextobjectid="10">
+ <tileset firstgid="1" name="Dessert" tilewidth="32" tileheight="32">
+  <image source="../tiles/tileset_desert.png" width="1024" height="1129"/>
+  <terraintypes>
+   <terrain name="Terrain" tile="-1"/>
+  </terraintypes>
+  <tile id="68" terrain="0,0,0,0"/>
+  <tile id="69" terrain="0,0,0,0"/>
+  <tile id="70" terrain="0,0,0,0"/>
+  <tile id="71" terrain="0,0,0,0"/>
+  <tile id="100" terrain="0,0,0,0"/>
+  <tile id="101" terrain="0,0,0,0"/>
+  <tile id="102" terrain="0,0,0,0"/>
+  <tile id="103" terrain="0,0,0,0"/>
+  <tile id="132" terrain="0,0,0,0"/>
+  <tile id="133" terrain="0,0,0,0"/>
+  <tile id="134" terrain="0,0,0,0"/>
+  <tile id="135" terrain="0,0,0,0"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="8" height="7">
+  <data encoding="base64" compression="zlib">
+   eJxjYGBgSGOAAGw0PjkGAnKDQT8A9bwLKQ==
+  </data>
+ </layer>
+ <objectgroup name="Objects"/>
+</map>
