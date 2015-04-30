@@ -15,7 +15,7 @@ namespace Chess_Demo
         {
             base.AddedToScene();
 
-            chessMap = new CCTileMap("assets/tmx/Chess.tmx");
+            chessMap = new CCTileMap("tmx/Chess.tmx");
             this.AddChild(chessMap);
         }
     }

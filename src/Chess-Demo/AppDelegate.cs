@@ -18,7 +18,7 @@ namespace Chess_Demo
 
         public override void ApplicationDidFinishLaunching(CCApplication application, CCWindow mainWindow)
         {
-            application.ContentRootDirectory = "Content";
+            application.ContentRootDirectory = "assets";
 
             sharedWindow = mainWindow;
 
