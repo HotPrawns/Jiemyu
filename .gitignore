@@ -189,5 +189,5 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # NuGet packages
+src/packages
 src/Chess-Demo/packages
-src/Chess-Demo/.nuget
