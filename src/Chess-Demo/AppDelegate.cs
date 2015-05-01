@@ -27,6 +27,7 @@ namespace Chess_Demo
                 application.MainWindow.WindowSizeInPixels.Height);
 
             CCScene scene = new CCScene(sharedWindow);
+            scene.AddChild(new ChessLayer());
 
             sharedWindow.RunWithScene(scene);
         }
