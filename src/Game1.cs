@@ -53,6 +53,8 @@ namespace ChessDemo
 
             tileMap.AddDecalTexture(Content.Load<Texture2D>("Tree Tall"));
             tileMap.AddDecalTexture(Content.Load<Texture2D>("Rock"));
+
+            tileMap.HighlightTexture = Content.Load<Texture2D>("Selector");
         }
 
         /// <summary>
@@ -89,6 +91,7 @@ namespace ChessDemo
 
             tileMap.MoveCamera(new Vector2(CameraXIncrement, CameraYIncrement));
 
+            tileMap.UpdateCursor(Mouse.GetState());
             base.Update(gameTime);
         }
 

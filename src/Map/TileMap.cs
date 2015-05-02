@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ChessDemo.Map
 {
@@ -23,9 +24,15 @@ namespace ChessDemo.Map
         const int TILESHIGH = 8; //13
 
         Vector2 CameraPosition;
+        Vector2 CurrentPosition;
 
         List<Texture2D> tileTextures = new List<Texture2D>();
         List<Texture2D> decalTextures = new List<Texture2D>();
+
+        // TODO: Replace with actual object representation, rather than just generic object
+        Dictionary<Object, Vector2> PlacedObjects = new Dictionary<Object, Vector2>();
+
+        public Texture2D HighlightTexture;
 
         public TileMap(Tile[,] tiles)
         {
@@ -68,6 +75,25 @@ namespace ChessDemo.Map
                 CameraPosition.Y = (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN;
         }
 
+        public void UpdateCursor(MouseState state)
+        {
+            Point position = state.Position;
+
+            // Calculate the current tile based on position
+            CurrentPosition.X = (position.X - LEFTMARGIN) / TILEWIDTH;
+            CurrentPosition.Y = (position.Y - TOPMARGIN) / TILEHEIGHT;
+        }
+
+        public void AddObjectToCurrentPosition(Object obj)
+        {
+            PlacedObjects.Add(obj, CurrentPosition);
+        }
+
+        public void AddObject(Object obj, int x, int y)
+        {
+            PlacedObjects.Add(obj, new Vector2(x, y));
+        }
+
         public void Draw(SpriteBatch batch)
         {
             for (var x = 0; x < Width; x++)
@@ -80,22 +106,35 @@ namespace ChessDemo.Map
 
                     // DRAW TILES
                     var tile = map[y, x];
-                    if (!tile.HasTexture) continue;
-
-                    var texture = tileTextures[tile.TextureIndex];
-                    if (y == 0)
-                        batch.Draw(texture, new Rectangle(left, top, TILEWIDTH, TILEHEIGHT), Color.White);
-                    else
-                        batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
-
+                    if (tile.HasTexture)
+                    {
+                        var texture = tileTextures[tile.TextureIndex];
+                        if (y == 0)
+                            batch.Draw(texture, new Rectangle(left, top, TILEWIDTH, TILEHEIGHT), Color.White);
+                        else
+                            batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                    }
 
 
                     // DRAW DECALS
-                    if (!tile.HasDecal) continue;
+                    if (tile.HasDecal)
+                    {
+                        var decal = decalTextures[tile.DecalIndex];
+                        batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                    }
 
-                    var decal = decalTextures[tile.DecalIndex];
-                    batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                    // ADD HIGHLIGHT
+                    if (x == CurrentPosition.X && y == CurrentPosition.Y)
+                    {
+                        batch.Draw(HighlightTexture, new Rectangle(left, top2-(int)(0.25*TILEHEIGHT), TILEWIDTH, TILEHEIGHT), Color.White);
+                    }
                 }
+            }
+
+            // Draw objects
+            foreach (Object obj in PlacedObjects.Keys)
+            {
+                // TODO: obj.Draw()
             }
         }
 
