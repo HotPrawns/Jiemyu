@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ChessDemo.Map;
+using System.Collections.Generic;
 
 namespace ChessDemo
 {
@@ -11,9 +13,12 @@ namespace ChessDemo
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        TileMap tileMap;
+        int KeyboundCameraIncrement = 3;
 
         public Game1()
         {
+            tileMap = new TileMap(GetTiles());
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -41,6 +46,13 @@ namespace ChessDemo
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            tileMap.AddTileTexture(Content.Load<Texture2D>("Plain Block"));
+            tileMap.AddTileTexture(Content.Load<Texture2D>("Dirt Block"));
+            tileMap.AddTileTexture(Content.Load<Texture2D>("Stone Block"));
+            tileMap.AddTileTexture(Content.Load<Texture2D>("Water Block"));
+
+            tileMap.AddDecalTexture(Content.Load<Texture2D>("Tree Tall"));
+            tileMap.AddDecalTexture(Content.Load<Texture2D>("Rock"));
         }
 
         /// <summary>
@@ -62,7 +74,20 @@ namespace ChessDemo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            int CameraXIncrement = 0;
+            int CameraYIncrement = 0;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                CameraXIncrement += -KeyboundCameraIncrement;
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                CameraXIncrement += KeyboundCameraIncrement;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                CameraYIncrement += -KeyboundCameraIncrement;
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                CameraYIncrement += KeyboundCameraIncrement;
+
+            tileMap.MoveCamera(new Vector2(CameraXIncrement, CameraYIncrement));
 
             base.Update(gameTime);
         }
@@ -76,8 +101,52 @@ namespace ChessDemo
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            tileMap.Draw(spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+
+        int[,] map = new int[,]
+        {
+            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+            {3, 3, 1, 0, 1, 0, 1, 0, 1, 0, 3, 3},
+            {3, 3, 0, 1, 0, 1, 0, 1, 0, 1, 3, 3},
+            {3, 3, 1, 0, 1, 0, 1, 0, 1, 0, 3, 3},
+            {3, 3, 0, 1, 0, 1, 0, 1, 0, 1, 3, 3},
+            {3, 3, 1, 0, 1, 0, 1, 0, 1, 0, 3, 3},
+            {3, 3, 0, 1, 0, 1, 0, 1, 0, 1, 3, 3},
+            {3, 3, 1, 0, 1, 0, 1, 0, 1, 0, 3, 3},
+            {3, 3, 0, 1, 0, 1, 0, 1, 0, 1, 3, 3},
+            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+            {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
+        };
+
+        /// <summary>
+        /// Converts the static map int index to Tile objects
+        /// </summary>
+        /// <returns></returns>
+        private Tile[,] GetTiles()
+        {
+            int width = map.GetLength(0),
+                height = map.GetLength(1);
+
+            Tile[,] tiles = new Tile[width, height];
+
+            for (int row = 0; row < map.GetLength(0); row++)
+            {
+                for (int col = 0; col < map.GetLength(1); col++)
+                {
+                    Tile t = new Tile();
+                    t.TextureIndex = map[row, col];
+                    tiles[row,col] = t;
+                }
+            }
+
+            return tiles;
         }
     }
 }
