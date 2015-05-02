@@ -31,7 +31,7 @@ namespace ChessDemo
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            this.IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -89,9 +89,10 @@ namespace ChessDemo
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 CameraYIncrement += KeyboundCameraIncrement;
 
+            // Make sure to update the camera before the cursor
             tileMap.MoveCamera(new Vector2(CameraXIncrement, CameraYIncrement));
-
             tileMap.UpdateCursor(Mouse.GetState());
+
             base.Update(gameTime);
         }
 

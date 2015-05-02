@@ -190,3 +190,4 @@ ModelManifest.xml
 
 # NuGet packages
 src/packages
+src/Chess-Demo/packages

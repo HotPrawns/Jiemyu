@@ -80,8 +80,11 @@ namespace ChessDemo.Map
             Point position = state.Position;
 
             // Calculate the current tile based on position
-            CurrentPosition.X = (position.X - LEFTMARGIN) / TILEWIDTH;
-            CurrentPosition.Y = (position.Y - TOPMARGIN) / TILEHEIGHT;
+            CurrentPosition.X = (int) (position.X + CameraPosition.X) / TILEWIDTH;
+
+            // 0.5 * TILEOFFSET to offset the blue background showing at the top. 
+            // TODO: Figure out why the tiles aren't drawn flush against the top
+            CurrentPosition.Y = (int) (position.Y + CameraPosition.Y - 0.5 * TILEOFFSET) / TILEOFFSET;
         }
 
         public void AddObjectToCurrentPosition(Object obj)
@@ -109,10 +112,7 @@ namespace ChessDemo.Map
                     if (tile.HasTexture)
                     {
                         var texture = tileTextures[tile.TextureIndex];
-                        if (y == 0)
-                            batch.Draw(texture, new Rectangle(left, top, TILEWIDTH, TILEHEIGHT), Color.White);
-                        else
-                            batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                        batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
 
 
@@ -126,7 +126,7 @@ namespace ChessDemo.Map
                     // ADD HIGHLIGHT
                     if (x == CurrentPosition.X && y == CurrentPosition.Y)
                     {
-                        batch.Draw(HighlightTexture, new Rectangle(left, top2-(int)(0.25*TILEHEIGHT), TILEWIDTH, TILEHEIGHT), Color.White);
+                        batch.Draw(HighlightTexture, new Rectangle(left, top2-(int)(0.5*TILEOFFSET), TILEWIDTH, TILEHEIGHT), Color.White);
                     }
                 }
             }
