@@ -6,6 +6,7 @@ using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ChessDemo.Entities;
 
 namespace ChessDemo.Map
 {
@@ -30,7 +31,7 @@ namespace ChessDemo.Map
         List<Texture2D> decalTextures = new List<Texture2D>();
 
         // TODO: Replace with actual object representation, rather than just generic object
-        Dictionary<Object, Vector2> PlacedObjects = new Dictionary<Object, Vector2>();
+        Dictionary<Entity, Vector2> PlacedObjects = new Dictionary<Entity, Vector2>();
 
         public Texture2D HighlightTexture;
 
@@ -87,12 +88,12 @@ namespace ChessDemo.Map
             CurrentPosition.Y = (int) (position.Y + CameraPosition.Y - 0.5 * TILEOFFSET) / TILEOFFSET;
         }
 
-        public void AddObjectToCurrentPosition(Object obj)
+        public void AddObjectToCurrentPosition(Entity obj)
         {
             PlacedObjects.Add(obj, CurrentPosition);
         }
 
-        public void AddObject(Object obj, int x, int y)
+        public void AddObject(Entity obj, int x, int y)
         {
             PlacedObjects.Add(obj, new Vector2(x, y));
         }
@@ -122,19 +123,31 @@ namespace ChessDemo.Map
                         var decal = decalTextures[tile.DecalIndex];
                         batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
-
-                    // ADD HIGHLIGHT
-                    if (x == CurrentPosition.X && y == CurrentPosition.Y)
-                    {
-                        batch.Draw(HighlightTexture, new Rectangle(left, top2-(int)(0.5*TILEOFFSET), TILEWIDTH, TILEHEIGHT), Color.White);
-                    }
                 }
             }
 
             // Draw objects
-            foreach (Object obj in PlacedObjects.Keys)
+            foreach (Entity entity in PlacedObjects.Keys)
             {
-                // TODO: obj.Draw()
+                var camx = (int)CameraPosition.X;
+                var camy = (int)CameraPosition.Y;
+                batch.Draw(entity.EntityTexture, new Rectangle(entity.Position.X-camx, entity.Position.Y-camy, TILEWIDTH, TILEHEIGHT), Color.White);
+            }
+
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    var left = x * TILEWIDTH - (int)CameraPosition.X;
+                    var top = y * TILEHEIGHT - (int)CameraPosition.Y;
+                    var top2 = y * (TILEHEIGHT - TILEOFFSET) - (int)CameraPosition.Y;
+
+                    // ADD HIGHLIGHT
+                    if (x == CurrentPosition.X && y == CurrentPosition.Y)
+                    {
+                        batch.Draw(HighlightTexture, new Rectangle(left, top2 - (int)(0.5 * TILEOFFSET), TILEWIDTH, TILEHEIGHT), Color.White);
+                    }
+                }
             }
         }
 
