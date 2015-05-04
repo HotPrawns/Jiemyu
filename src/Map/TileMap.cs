@@ -22,13 +22,20 @@ namespace ChessDemo.Map
         const int BOTTOMMARGIN = 0;
 
         const int TILESWIDE = 8;
-        const int TILESHIGH = 8; //13
+        const int TILESHIGH = 8;
 
-        Vector2 CameraPosition;
-        Vector2 CurrentPosition;
+        private Vector2 cameraPosition;
+        private Vector2 currentPosition;
+        private Vector2 selectedPosition;
 
-        List<Texture2D> tileTextures = new List<Texture2D>();
-        List<Texture2D> decalTextures = new List<Texture2D>();
+        private Entity selectedEntity;
+
+        private List<Vector2> possibleMoves;
+
+        private bool selectionUpdated;
+
+        private List<Texture2D> tileTextures = new List<Texture2D>();
+        private List<Texture2D> decalTextures = new List<Texture2D>();
 
         // TODO: Replace with actual object representation, rather than just generic object
         Dictionary<Entity, Vector2> PlacedObjects = new Dictionary<Entity, Vector2>();
@@ -64,56 +71,146 @@ namespace ChessDemo.Map
 
         public void MoveCamera(Vector2 cameraDirection)
         {
-            CameraPosition += cameraDirection;
+            cameraPosition += cameraDirection;
 
-            if (CameraPosition.X < LEFTMARGIN)
-                CameraPosition.X = LEFTMARGIN;
-            if (CameraPosition.Y < TOPMARGIN)
-                CameraPosition.Y = TOPMARGIN;
-            if (CameraPosition.X > (Width - TILESWIDE) * TILEWIDTH + RIGHTMARGIN)
-                CameraPosition.X = (Width - TILESWIDE) * TILEWIDTH + RIGHTMARGIN;
-            if (CameraPosition.Y > (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN)
-                CameraPosition.Y = (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN;
+            if (cameraPosition.X < LEFTMARGIN)
+                cameraPosition.X = LEFTMARGIN;
+            if (cameraPosition.Y < TOPMARGIN)
+                cameraPosition.Y = TOPMARGIN;
+            if (cameraPosition.X > (Width - TILESWIDE) * TILEWIDTH + RIGHTMARGIN)
+                cameraPosition.X = (Width - TILESWIDE) * TILEWIDTH + RIGHTMARGIN;
+            if (cameraPosition.Y > (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN)
+                cameraPosition.Y = (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN;
         }
 
         public void UpdateCursor(MouseState state)
         {
             Point position = state.Position;
 
+            currentPosition = GetTileForPoint(position);
+
+            // Check if the current tile needs to be selected
+            if (state.LeftButton == ButtonState.Pressed)
+            {
+                selectedPosition = currentPosition;
+                selectionUpdated = true;
+            }
+        }
+
+        public Vector2 GetTileForPoint(Point point)
+        {
+            Vector2 tile = new Vector2();
+
             // Calculate the current tile based on position
-            CurrentPosition.X = (int) (position.X + CameraPosition.X) / TILEWIDTH;
+            tile.X = (int)(point.X + cameraPosition.X) / TILEWIDTH;
 
             // 0.5 * TILEOFFSET to offset the blue background showing at the top. 
             // TODO: Figure out why the tiles aren't drawn flush against the top
-            CurrentPosition.Y = (int) (position.Y + CameraPosition.Y - 0.5 * TILEOFFSET) / TILEOFFSET;
+            tile.Y = (int)(point.Y + cameraPosition.Y - 0.5 * TILEOFFSET) / TILEOFFSET;
+
+            return tile;
         }
 
+        /// <summary>
+        /// Returns the coordinates of the top-left point
+        /// of a given tile
+        /// </summary>
+        /// <param name="tile"></param>
+        /// <returns></returns>
+        public Point GetPointForTile(Vector2 tile)
+        {
+            Point point = new Point();
+
+            point.X = (int)((tile.X * TILEWIDTH) - cameraPosition.X);
+            point.Y = (int)((tile.Y * TILEOFFSET) - (cameraPosition.Y - 0.5 * TILEOFFSET));
+
+            return point;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Entity GetEntityFor(Vector2 position)
+        {
+            return PlacedObjects.Keys.FirstOrDefault(entity => position.Equals(PlacedObjects[entity]));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         public void AddObjectToCurrentPosition(Entity obj)
         {
-            PlacedObjects.Add(obj, CurrentPosition);
+            PlacedObjects.Add(obj, currentPosition);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="tile"></param>
+        public void AddObject(Entity obj, Vector2 tile)
+        {
+            AddObject(obj, (int) tile.X, (int) tile.Y);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void AddObject(Entity obj, int x, int y)
         {
             PlacedObjects.Add(obj, new Vector2(x, y));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="batch"></param>
         public void Draw(SpriteBatch batch)
         {
+            if (selectionUpdated)
+            {
+                // Reset the update flag
+                selectionUpdated = false;
+
+                // Update the selected entity
+                selectedEntity = GetEntityFor(selectedPosition);
+            }
+
+            // Every frame, possible moves gets updated.
+            // TODO: Add a flag to indicate when this needs to be updated.
+            // It only needs to update if anything moves on the board, or
+            // the selection changes.
+            UpdatePossibleMoves();
+
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    var left = x * TILEWIDTH - (int)CameraPosition.X;
-                    var top = y * TILEHEIGHT - (int)CameraPosition.Y;
-                    var top2 = y * (TILEHEIGHT - TILEOFFSET) - (int)CameraPosition.Y;
+                    Point point = GetPointForTile(new Vector2(x, y));
+                    var left = point.X;
+                    var top = point.Y;
+                    var top2 = y * (TILEHEIGHT - TILEOFFSET) - (int)cameraPosition.Y;
+
+                    Color tint = Color.White;
+
+                    if (possibleMoves.Any(move => move.X == x && move.Y == y))
+                    {
+                        // A near white tint
+                        tint = new Color(250, 255, 250);
+                    }
 
                     // DRAW TILES
                     var tile = map[y, x];
                     if (tile.HasTexture)
                     {
                         var texture = tileTextures[tile.TextureIndex];
-                        batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                        batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), tint);
                     }
 
 
@@ -121,7 +218,7 @@ namespace ChessDemo.Map
                     if (tile.HasDecal)
                     {
                         var decal = decalTextures[tile.DecalIndex];
-                        batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                        batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), tint);
                     }
                 }
             }
@@ -129,21 +226,21 @@ namespace ChessDemo.Map
             // Draw objects
             foreach (Entity entity in PlacedObjects.Keys)
             {
-                var camx = (int)CameraPosition.X;
-                var camy = (int)CameraPosition.Y;
-                batch.Draw(entity.EntityTexture, new Rectangle(entity.Position.X-camx, entity.Position.Y-camy, TILEWIDTH, TILEHEIGHT), Color.White);
+                Vector2 position = PlacedObjects[entity];
+                Point point = GetPointForTile(position);
+                batch.Draw(entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), Color.White);
             }
 
             for (var x = 0; x < Width; x++)
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    var left = x * TILEWIDTH - (int)CameraPosition.X;
-                    var top = y * TILEHEIGHT - (int)CameraPosition.Y;
-                    var top2 = y * (TILEHEIGHT - TILEOFFSET) - (int)CameraPosition.Y;
+                    var left = x * TILEWIDTH - (int)cameraPosition.X;
+                    var top = y * TILEHEIGHT - (int)cameraPosition.Y;
+                    var top2 = y * (TILEHEIGHT - TILEOFFSET) - (int)cameraPosition.Y;
 
                     // ADD HIGHLIGHT
-                    if (x == CurrentPosition.X && y == CurrentPosition.Y)
+                    if (x == currentPosition.X && y == currentPosition.Y)
                     {
                         batch.Draw(HighlightTexture, new Rectangle(left, top2 - (int)(0.5 * TILEOFFSET), TILEWIDTH, TILEHEIGHT), Color.White);
                     }
@@ -151,5 +248,160 @@ namespace ChessDemo.Map
             }
         }
 
+        // TODO: This could use some love. It works for now, but seems hacky at best
+        class MaxMoveDistance
+        {
+            public int Front = -1;
+            public int Back = -1;
+            public int FrontLeft = -1;
+            public int FrontRight = -1;
+            public int Right = -1;
+            public int Left = -1;
+            public int BackLeft = -1;
+            public int BackRight = -1;
+
+            public bool CanMove(Vector2 direction)
+            {
+                int max = 0;
+
+                // Front
+                if (direction.Y > 0)
+                {
+                    if (direction.X > 0)
+                    {
+                        max = this.FrontRight;
+                    }
+                    else if (direction.X < 0)
+                    {
+                        max = this.FrontLeft;
+                    }
+                    else
+                    {
+                        max = this.Front;
+                    }
+                }
+                // Back
+                else if (direction.Y < 0)
+                {
+                    if (direction.X > 0)
+                    {
+                        max = this.BackRight;
+                    }
+                    else if (direction.X < 0)
+                    {
+                        max = this.BackLeft;
+                    }
+                    else
+                    {
+                        max = this.Back;
+                    }
+                }
+                // Left or Right
+                else
+                {
+                    if (direction.X > 0)
+                    {
+                        max = this.Right;
+                    }
+                    else if (direction.X < 0)
+                    {
+                        max = this.Left;
+                    }
+                }
+
+                return (max == -1) || (direction.Length() <= max);
+            }
+        }
+
+        private void UpdatePossibleMoves()
+        {
+            possibleMoves = new List<Vector2>();
+
+            if (selectedEntity == null)
+            {
+                return;
+            }
+
+            MaxMoveDistance maxMoveDistance = new MaxMoveDistance();
+
+            foreach (var direction in selectedEntity.GetAvailableMovements())
+            {
+                CalculateMaxMovement(direction, ref maxMoveDistance);
+
+                if (maxMoveDistance.CanMove(direction))
+                {
+                    // PossibleMoves stores in "Map Space" (i.e not relative)
+                    possibleMoves.Add(selectedPosition + direction);
+                }
+            }
+
+        }
+
+        private void CalculateMaxMovement(Vector2 direction, ref MaxMoveDistance maxMoveDistance)
+        {
+
+            // Front
+            if (direction.Y > 0)
+            {
+                if (direction.X > 0)
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.FrontRight);
+                }
+                else if (direction.X < 0)
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.FrontLeft);
+                }
+                else
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.Front);
+                }
+            }
+            // Back
+            else if (direction.Y < 0)
+            {
+                if (direction.X > 0)
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.BackRight);
+                }
+                else if (direction.X < 0)
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.BackLeft);
+                }
+                else 
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.Back);
+                }
+            }
+            // Left or Right
+            else
+            { 
+                if (direction.X > 0)
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.Right);
+                }
+                else if (direction.X < 0)
+                {
+                    CalculateMaxMovement(direction, ref maxMoveDistance.Left);
+                }
+            }
+        }
+
+        private void CalculateMaxMovement(Vector2 direction, ref int maxMoveDistance)
+        {
+            // Exit early if the distance has been set
+            if (maxMoveDistance != -1)
+            {
+                return;
+            }
+
+            var startPoint = selectedPosition;
+            var currentPoint = startPoint;
+
+            do
+            {
+                maxMoveDistance++;
+                currentPoint += direction;
+            } while (GetEntityFor(currentPoint) == null);
+        }
     }
 }

@@ -14,30 +14,35 @@ namespace ChessDemo.Entities
 
         public void AddEntityTexture(Texture2D texture)
         {
-           entityTextures.Add(texture);
+            entityTextures.Add(texture);
         }
 
-        public List<Entity> InitialChessLayout(){
+        public List<Entity> InitialChessLayout()
+        {
             List<Entity> entityList = new List<Entity>();
 
             //Pawns Everywhere
-            for (int x = 200; x < 1000; x+=100){
-                entityList.Add(generateCatPawn(x, 225));
+            for (int x = 2*101; x < 10*101; x += 101)
+            {
+                entityList.Add(GenerateCatPawn(x, 3*87));
             }
 
-
-
-            
             return entityList;
-
         }
-        
-        private Entity generateCatPawn(int x, int y){
+
+
+
+        private Entity GenerateCatPawn(int x, int y)
+        {
             Entity catPawn = new Pawn();
             catPawn.EntityTexture = entityTextures[0];
-            catPawn.Position = new Point(x,y);
+            catPawn.Position = new Point(x, y);
             return catPawn;
         }
 
+        public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager Content)
+        {
+            AddEntityTexture(Content.Load<Texture2D>("Character Cat Girl"));
+        }
     }
 }

@@ -60,13 +60,14 @@ namespace ChessDemo
 
             tileMap.HighlightTexture = Content.Load<Texture2D>("Selector");
 
-            entityFactory.AddEntityTexture(Content.Load<Texture2D>("Character Cat Girl"));
+            entityFactory.LoadContent(Content);
 
             //Initializing Entity Positions.  This should probably move.
             List<Entity> initialEntities = entityFactory.InitialChessLayout();
 
-            foreach(Entity e in initialEntities){
-                tileMap.AddObject(e, e.Position.X, e.Position.Y);
+            foreach(Entity e in initialEntities)
+            {
+                tileMap.AddObject(e, tileMap.GetTileForPoint(e.Position));
             }
         }
 
