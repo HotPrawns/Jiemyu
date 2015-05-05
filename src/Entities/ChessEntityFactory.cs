@@ -24,7 +24,7 @@ namespace ChessDemo.Entities
             //Pawns Everywhere
             for (int x = 2*101; x < 10*101; x += 101)
             {
-                entityList.Add(GenerateCatPawn(x, 3*87));
+                entityList.Add(GenerateCatPawn(x, (int)(3.6*87)));
             }
 
             return entityList;

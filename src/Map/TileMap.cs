@@ -59,6 +59,8 @@ namespace ChessDemo.Map
             get { return map.GetLength(0); }
         }
 
+        public Texture2D MoveIndicator { get; internal set; }
+
         public void AddTileTexture(Texture2D texture)
         {
             tileTextures.Add(texture);
@@ -102,11 +104,11 @@ namespace ChessDemo.Map
             Vector2 tile = new Vector2();
 
             // Calculate the current tile based on position
-            tile.X = (int)(point.X + cameraPosition.X) / TILEWIDTH;
+            tile.X = (int) Math.Floor((point.X + cameraPosition.X) / TILEWIDTH);
 
             // 0.5 * TILEOFFSET to offset the blue background showing at the top. 
             // TODO: Figure out why the tiles aren't drawn flush against the top
-            tile.Y = (int)(point.Y + cameraPosition.Y - 0.5 * TILEOFFSET) / TILEOFFSET;
+            tile.Y = (int) Math.Floor((point.Y + cameraPosition.Y - 0.5*TILEOFFSET) / TILEOFFSET);
 
             return tile;
         }
@@ -122,7 +124,7 @@ namespace ChessDemo.Map
             Point point = new Point();
 
             point.X = (int)((tile.X * TILEWIDTH) - cameraPosition.X);
-            point.Y = (int)((tile.Y * TILEOFFSET) - (cameraPosition.Y - 0.5 * TILEOFFSET));
+            point.Y = (int)((tile.Y * TILEOFFSET) - (cameraPosition.Y + 0.5*TILEOFFSET));
 
             return point;
         }
@@ -197,20 +199,12 @@ namespace ChessDemo.Map
                     var top = point.Y;
                     var top2 = y * (TILEHEIGHT - TILEOFFSET) - (int)cameraPosition.Y;
 
-                    Color tint = Color.White;
-
-                    if (possibleMoves.Any(move => move.X == x && move.Y == y))
-                    {
-                        // A near white tint
-                        tint = new Color(250, 255, 250);
-                    }
-
                     // DRAW TILES
                     var tile = map[y, x];
                     if (tile.HasTexture)
                     {
                         var texture = tileTextures[tile.TextureIndex];
-                        batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), tint);
+                        batch.Draw(texture, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
 
 
@@ -218,7 +212,12 @@ namespace ChessDemo.Map
                     if (tile.HasDecal)
                     {
                         var decal = decalTextures[tile.DecalIndex];
-                        batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), tint);
+                        batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                    }
+
+                    if (possibleMoves.Any(move => move.X == x && move.Y == y))
+                    {
+                        batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.Azure);
                     }
                 }
             }
@@ -386,22 +385,40 @@ namespace ChessDemo.Map
             }
         }
 
-        private void CalculateMaxMovement(Vector2 direction, ref int maxMoveDistance)
+        private void CalculateMaxMovement(Vector2 totalDirection, ref int maxMoveDistance)
         {
             // Exit early if the distance has been set
-            if (maxMoveDistance != -1)
+            if (maxMoveDistance != -1 || totalDirection == Vector2.Zero)
             {
                 return;
             }
 
-            var startPoint = selectedPosition;
-            var currentPoint = startPoint;
+            Vector2 direction = new Vector2();
 
-            do
+            if (totalDirection.Y != 0)
+            {
+                direction.Y = (totalDirection.Y > 0) ? 1 : -1;
+            }
+
+            if (totalDirection.X != 0)
+            {
+                direction.X = (totalDirection.X > 0) ? 1 : -1;
+            }
+
+            var startPoint = selectedPosition;
+            var currentPoint = startPoint + direction;
+
+            maxMoveDistance = 0;
+            while (GetEntityFor(currentPoint) == null && HasTile(currentPoint))
             {
                 maxMoveDistance++;
                 currentPoint += direction;
-            } while (GetEntityFor(currentPoint) == null);
+            }
+        }
+
+        private bool HasTile(Vector2 tile)
+        {
+            return (tile.X >= 0 && tile.X <= Width) && (tile.Y >= 0 && tile.Y <= Height);
         }
     }
 }

@@ -20,11 +20,17 @@ namespace ChessDemo.Entities
         /// </summary>
         public Texture2D EntityTexture;
 
+        /// <summary>
+        /// Vector to represent which way the entity is face in map coordinates. Positive Y is down, positive X is right
+        /// </summary>
+        public Vector2 Forward { get; set; }
+
         protected MoveBehavior MoveBehavior;
 
         public Entity()
         {
             MoveBehavior = new MoveBehavior();
+            Forward = new Vector2(0, 1); // Default to facing down
         }
 
         public int MoveDistance

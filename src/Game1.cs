@@ -59,6 +59,7 @@ namespace ChessDemo
             tileMap.AddDecalTexture(Content.Load<Texture2D>("Rock"));
 
             tileMap.HighlightTexture = Content.Load<Texture2D>("Selector");
+            tileMap.MoveIndicator = new Texture2D(GraphicsDevice, 1, 1);
 
             entityFactory.LoadContent(Content);
 
@@ -142,6 +143,8 @@ namespace ChessDemo
             {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
             {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
         };
+        private readonly object ScreenManager;
+
 
         /// <summary>
         /// Converts the static map int index to Tile objects
