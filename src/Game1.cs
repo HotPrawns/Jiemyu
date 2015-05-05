@@ -59,7 +59,7 @@ namespace ChessDemo
             tileMap.AddDecalTexture(Content.Load<Texture2D>("Rock"));
 
             tileMap.HighlightTexture = Content.Load<Texture2D>("Selector");
-            tileMap.MoveIndicator = new Texture2D(GraphicsDevice, 1, 1);
+            tileMap.MoveIndicator = Content.Load<Texture2D>("Highlight");
 
             entityFactory.LoadContent(Content);
 
