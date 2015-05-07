@@ -323,7 +323,7 @@ namespace ChessDemo.Map
 
             MaxMoveDistance maxMoveDistance = new MaxMoveDistance();
 
-            foreach (var direction in selectedEntity.GetAvailableMovements())
+            foreach (var direction in selectedEntity.GetAvailableMovements(TILESWIDE))
             {
                 CalculateMaxMovement(direction, ref maxMoveDistance);
 
@@ -333,7 +333,6 @@ namespace ChessDemo.Map
                     possibleMoves.Add(selectedPosition + direction);
                 }
             }
-
         }
 
         private void CalculateMaxMovement(Vector2 direction, ref MaxMoveDistance maxMoveDistance)
@@ -418,7 +417,10 @@ namespace ChessDemo.Map
 
         private bool HasTile(Vector2 tile)
         {
-            return (tile.X >= 0 && tile.X <= Width) && (tile.Y >= 0 && tile.Y <= Height);
+            int xPadding = (Width - TILESWIDE) / 2;
+            int yPadding = (Height - TILESHIGH) / 2;
+
+            return (tile.X >= xPadding && tile.X < (TILESWIDE + xPadding) && (tile.Y >= yPadding && tile.Y < (TILESHIGH + yPadding)));
         }
     }
 }

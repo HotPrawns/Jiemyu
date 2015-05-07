@@ -28,9 +28,14 @@ namespace ChessDemo.Entities
         };
 
         /// <summary>
+        /// Number that represents infinite move distance
+        /// </summary>
+        public static readonly int InfiniteMoveDistance = -1;
+
+        /// <summary>
         /// Available distance to move. -1 represents max, as set by the map.
         /// </summary>
-        public int MoveDistance = -1;
+        public int MoveDistance = InfiniteMoveDistance;
 
         /// <summary>
         /// MoveCapabilities of the entity. Defaults to Walk.
@@ -47,16 +52,18 @@ namespace ChessDemo.Entities
         /// that an entity can move.
         /// </summary>
         /// <returns></returns>
-        public Vector2[] GetAvailableMovements()
+        public Vector2[] GetAvailableMovements(int max)
         {
             List<Vector2> moves = new List<Vector2>();
+
+            max = (MoveDistance == InfiniteMoveDistance) ? max : MoveDistance;
 
             if (IsFlagSet(MoveCapabilities.Walk))
             {
                 // If a unit can walk, it can move from 0-X squares in available directions
                 if (IsFlagSet(MoveTypes.Diagonal))
                 {
-                    for (int i = 1; i <= MoveDistance; i++)
+                    for (int i = 1; i <= max; i++)
                     {
                         Vector2 rf = new Vector2(i,i);
                         Vector2 lf = new Vector2(-i, i);
@@ -72,7 +79,7 @@ namespace ChessDemo.Entities
 
                 if (IsFlagSet(MoveTypes.Linear))
                 {
-                    for (int i = 1; i <= MoveDistance; i++)
+                    for (int i = 1; i <= max; i++)
                     {
                         Vector2 f = new Vector2(0, i);
                         Vector2 b = new Vector2(0, -i);
@@ -88,7 +95,7 @@ namespace ChessDemo.Entities
 
                 if (IsFlagSet(MoveTypes.Forward))
                 {
-                    for (int i = 1; i <= MoveDistance; i++)
+                    for (int i = 1; i <= max; i++)
                     {
                         moves.Add(new Vector2(0, i));
                     }

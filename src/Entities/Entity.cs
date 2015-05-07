@@ -50,9 +50,9 @@ namespace ChessDemo.Entities
         /// can be moved to.
         /// </summary>
         /// <returns></returns>
-        public Vector2[] GetAvailableMovements()
+        public Vector2[] GetAvailableMovements(int max)
         {
-            return MoveBehavior.GetAvailableMovements();
+            return MoveBehavior.GetAvailableMovements(max);
         }
 
         //TODO: Other Non-Chess ones, such as entities that can 'attack'
