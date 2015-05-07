@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ChessDemo.Entities;
+using ChessDemo.Input;
 
 namespace ChessDemo.Map
 {
@@ -32,10 +33,12 @@ namespace ChessDemo.Map
 
         private List<Vector2> possibleMoves;
 
-        private bool selectionUpdated;
+        private volatile bool selectionUpdated;
 
         private List<Texture2D> tileTextures = new List<Texture2D>();
         private List<Texture2D> decalTextures = new List<Texture2D>();
+
+        private MouseProcessor mouseProcessor = new MouseProcessor();
 
         // TODO: Replace with actual object representation, rather than just generic object
         Dictionary<Entity, Vector2> PlacedObjects = new Dictionary<Entity, Vector2>();
@@ -45,6 +48,8 @@ namespace ChessDemo.Map
         public TileMap(Tile[,] tiles)
         {
             map = tiles;
+
+            mouseProcessor.Clicked += new MouseEventHandler(MouseClicked);
         }
 
         Tile[,] map;
@@ -85,18 +90,33 @@ namespace ChessDemo.Map
                 cameraPosition.Y = (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN;
         }
 
+        private void MouseClicked(MouseProcessor processor)
+        {
+            if (possibleMoves.Any(p => p.X == currentPosition.X && p.Y == currentPosition.Y))
+            {
+                MoveEntity(currentPosition);
+            }
+            else
+            {
+                selectedPosition = currentPosition;
+            }
+
+            selectionUpdated = true;
+        }
+
         public void UpdateCursor(MouseState state)
         {
             Point position = state.Position;
 
             currentPosition = GetTileForPoint(position);
+            mouseProcessor.Update(state);
+        }
 
-            // Check if the current tile needs to be selected
-            if (state.LeftButton == ButtonState.Pressed)
-            {
-                selectedPosition = currentPosition;
-                selectionUpdated = true;
-            }
+        private void MoveEntity(Vector2 newPosition)
+        {
+            selectedEntity.Position = GetPointForTile(newPosition);
+            PlacedObjects[selectedEntity] = newPosition;
+            selectedPosition = new Vector2(-1,-1);
         }
 
         public Vector2 GetTileForPoint(Point point)
@@ -308,7 +328,16 @@ namespace ChessDemo.Map
                     }
                 }
 
-                return (max == -1) || (direction.Length() <= max);
+                var length = Math.Abs(direction.X) + Math.Abs(direction.Y);
+
+                if (direction.X != 0 && direction.Y != 0)
+                {
+                    // Movement in x and y is complex, and I'm lazy.
+                    // Just divide by 2 in hoping they are the same
+                    length /= 2;
+                }
+
+                return length <= max;
             }
         }
 
