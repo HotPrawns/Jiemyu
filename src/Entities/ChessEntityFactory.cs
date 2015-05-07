@@ -21,11 +21,15 @@ namespace ChessDemo.Entities
         {
             List<Entity> entityList = new List<Entity>();
 
-            //Pawns Everywhere
+            // Pawns Everywhere
             for (int x = 2*101; x < 10*101; x += 101)
             {
                 entityList.Add(GenerateCatPawn(x, (int)(3.6*87)));
             }
+
+            // Rook me Amadeus 
+            entityList.Add(GenerateRook(202, (int)3 * 87));
+            entityList.Add(GenerateRook(909, (int)3 * 87));
 
             return entityList;
         }
@@ -40,9 +44,18 @@ namespace ChessDemo.Entities
             return catPawn;
         }
 
+        private Entity GenerateRook(int x, int y)
+        {
+            Entity rook = new Rook();
+            rook.EntityTexture = entityTextures[1];
+            rook.Position = new Point(x, y);
+            return rook;
+        }
+
         public void LoadContent(Microsoft.Xna.Framework.Content.ContentManager Content)
         {
             AddEntityTexture(Content.Load<Texture2D>("Character Cat Girl"));
+            AddEntityTexture(Content.Load<Texture2D>("Character Horn Girl"));
         }
     }
 }
