@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ChessDemo.Map;
+using ChessDemo.Entities;
 using System.Collections.Generic;
 
 namespace ChessDemo
@@ -14,11 +15,14 @@ namespace ChessDemo
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         TileMap tileMap;
+        ChessEntityFactory entityFactory;
+
         int KeyboundCameraIncrement = 3;
 
         public Game1()
         {
             tileMap = new TileMap(GetTiles());
+            entityFactory = new ChessEntityFactory();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -55,6 +59,17 @@ namespace ChessDemo
             tileMap.AddDecalTexture(Content.Load<Texture2D>("Rock"));
 
             tileMap.HighlightTexture = Content.Load<Texture2D>("Selector");
+            tileMap.MoveIndicator = Content.Load<Texture2D>("Highlight");
+
+            entityFactory.LoadContent(Content);
+
+            //Initializing Entity Positions.  This should probably move.
+            List<Entity> initialEntities = entityFactory.InitialChessLayout();
+
+            foreach(Entity e in initialEntities)
+            {
+                tileMap.AddObject(e, tileMap.GetTileForPoint(e.Position));
+            }
         }
 
         /// <summary>
@@ -128,6 +143,8 @@ namespace ChessDemo
             {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
             {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
         };
+        private readonly object ScreenManager;
+
 
         /// <summary>
         /// Converts the static map int index to Tile objects

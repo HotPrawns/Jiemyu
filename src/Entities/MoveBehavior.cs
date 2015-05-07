@@ -56,7 +56,7 @@ namespace ChessDemo.Entities
                 // If a unit can walk, it can move from 0-X squares in available directions
                 if (IsFlagSet(MoveTypes.Diagonal))
                 {
-                    for (int i = 0; i <= MoveDistance; i++)
+                    for (int i = 1; i <= MoveDistance; i++)
                     {
                         Vector2 rf = new Vector2(i,i);
                         Vector2 lf = new Vector2(-i, i);
@@ -72,7 +72,7 @@ namespace ChessDemo.Entities
 
                 if (IsFlagSet(MoveTypes.Linear))
                 {
-                    for (int i = 0; i <= MoveDistance; i++)
+                    for (int i = 1; i <= MoveDistance; i++)
                     {
                         Vector2 f = new Vector2(0, i);
                         Vector2 b = new Vector2(0, -i);
@@ -88,7 +88,7 @@ namespace ChessDemo.Entities
 
                 if (IsFlagSet(MoveTypes.Forward))
                 {
-                    for (int i = 0; i <= MoveDistance; i++)
+                    for (int i = 1; i <= MoveDistance; i++)
                     {
                         moves.Add(new Vector2(0, i));
                     }
