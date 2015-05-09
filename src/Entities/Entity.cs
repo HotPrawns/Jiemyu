@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ChessDemo.Entities.Behaviors;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 
 namespace ChessDemo.Entities
 {
@@ -25,14 +23,34 @@ namespace ChessDemo.Entities
         /// </summary>
         public Vector2 Forward { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected MoveBehavior MoveBehavior;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        protected AttackBehavior AttackBehavior;
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public Entity()
         {
+            AttackBehavior = new AttackBehavior();
             MoveBehavior = new MoveBehavior();
             Forward = new Vector2(0, 1); // Default to facing down
         }
 
+        /// <summary>
+        /// Total HitPoints for a unit
+        /// </summary>
+        public int HitPoints { get; set; }
+
+        /// <summary>
+        /// How far an entity can move, based on MoveBehavior
+        /// </summary>
         public int MoveDistance
         {
             get
@@ -54,7 +72,5 @@ namespace ChessDemo.Entities
         {
             return MoveBehavior.GetAvailableMovements(max);
         }
-
-        //TODO: Other Non-Chess ones, such as entities that can 'attack'
     }
 }
