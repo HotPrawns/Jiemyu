@@ -26,20 +26,30 @@ namespace ChessDemo.Entities
         /// <summary>
         /// 
         /// </summary>
-        protected MoveBehavior MoveBehavior;
+        protected MoveBehavior _MoveBehavior;
+
+        /// <summary>
+        /// Public read-only access to MoveBehavior
+        /// </summary>
+        public MoveBehavior MoveBehavior { get { return _MoveBehavior; } }
 
         /// <summary>
         /// 
         /// </summary>
-        protected AttackBehavior AttackBehavior;
+        protected AttackBehavior _AttackBehavior;
+
+        /// <summary>
+        /// Public read-only access to AttackBehavior
+        /// </summary>
+        public AttackBehavior AttackBehavior { get { return _AttackBehavior; } }
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         public Entity()
         {
-            AttackBehavior = new AttackBehavior();
-            MoveBehavior = new MoveBehavior();
+            _AttackBehavior = new AttackBehavior();
+            _MoveBehavior = new MoveBehavior();
             Forward = new Vector2(0, 1); // Default to facing down
         }
 
@@ -55,11 +65,11 @@ namespace ChessDemo.Entities
         {
             get
             {
-                return MoveBehavior.MoveDistance;
+                return _MoveBehavior.MoveDistance;
             }
             set 
             {
-                MoveBehavior.MoveDistance = value;
+                _MoveBehavior.MoveDistance = value;
             }
         }
 
@@ -70,7 +80,7 @@ namespace ChessDemo.Entities
         /// <returns></returns>
         public Vector2[] GetAvailableMovements(int max)
         {
-            return MoveBehavior.GetAvailableMovements(max);
+            return _MoveBehavior.GetAvailableMovements(max);
         }
     }
 }

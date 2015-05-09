@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Entities\Behaviors\AttackBehavior.cs" />
+    <Compile Include="Entities\Behaviors\CustomMoveBehavior.cs" />
     <Compile Include="Entities\Behaviors\MoveAttack.cs" />
     <Compile Include="Entities\Chess\Bishop.cs" />
     <Compile Include="Entities\Chess\King.cs" />
@@ -50,7 +51,10 @@
     <Compile Include="Entities\Behaviors\MoveBehavior.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input\MouseProcessor.cs" />
-    <Compile Include="Map\PlacedObjectList.cs" />
+    <Compile Include="Map\MoveList.cs" />
+    <Compile Include="Map\MoveCalculator.cs" />
+    <Compile Include="Map\Move.cs" />
+    <Compile Include="Map\RenderObject.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\TileMap.cs" />
     <Compile Include="Map\Vector2Comparer.cs" />

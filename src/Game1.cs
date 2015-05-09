@@ -47,6 +47,7 @@ namespace ChessDemo
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
@@ -60,6 +61,7 @@ namespace ChessDemo
 
             tileMap.HighlightTexture = Content.Load<Texture2D>("Selector");
             tileMap.MoveIndicator = Content.Load<Texture2D>("Highlight");
+            tileMap.AttackIndicator = Content.Load<Texture2D>("Attack Highlight");
 
             entityFactory.LoadContent(Content);
 

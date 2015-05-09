@@ -52,7 +52,7 @@ namespace ChessDemo.Entities.Behaviors
         /// that an entity can move.
         /// </summary>
         /// <returns></returns>
-        public Vector2[] GetAvailableMovements(int max)
+        public virtual Vector2[] GetAvailableMovements(int max)
         {
             List<Vector2> moves = new List<Vector2>();
 

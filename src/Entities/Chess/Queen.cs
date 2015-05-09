@@ -11,11 +11,11 @@ namespace ChessDemo.Entities.Chess
         public Queen()
         {
             this.HitPoints = 1;
-            this.MoveBehavior.MoveType = MoveBehavior.MoveTypes.Diagonal | MoveBehavior.MoveTypes.Linear;
+            this._MoveBehavior.MoveType = MoveBehavior.MoveTypes.Diagonal | MoveBehavior.MoveTypes.Linear;
 
-            var attackBehavior = new MoveAttack(this.MoveBehavior);
+            var attackBehavior = new MoveAttack(this._MoveBehavior);
             attackBehavior.Damage = 1;
-            this.AttackBehavior = attackBehavior;
+            this._AttackBehavior = attackBehavior;
         }
     }
 }
