@@ -40,8 +40,7 @@ namespace ChessDemo.Map
 
         private MouseProcessor mouseProcessor = new MouseProcessor();
 
-        // TODO: Replace with actual object representation, rather than just generic object
-        Dictionary<Entity, Vector2> PlacedObjects = new Dictionary<Entity, Vector2>();
+        PlacedObjectList PlacedObjects = new PlacedObjectList(new Vector2Comparer());
 
         public Texture2D HighlightTexture;
 
@@ -49,6 +48,7 @@ namespace ChessDemo.Map
         {
             map = tiles;
 
+            // Set up any mouse related event handlers
             mouseProcessor.Clicked += new MouseEventHandler(MouseClicked);
         }
 
@@ -115,7 +115,7 @@ namespace ChessDemo.Map
         private void MoveEntity(Vector2 newPosition)
         {
             selectedEntity.Position = GetPointForTile(newPosition);
-            PlacedObjects[selectedEntity] = newPosition;
+            PlacedObjects.UpdatePosition(selectedEntity, newPosition);
             selectedPosition = new Vector2(-1,-1);
         }
 
@@ -156,7 +156,14 @@ namespace ChessDemo.Map
         /// <returns></returns>
         public Entity GetEntityFor(Vector2 position)
         {
-            return PlacedObjects.Keys.FirstOrDefault(entity => position.Equals(PlacedObjects[entity]));
+            var pair = PlacedObjects.FirstOrDefault(p => p.Key == position);
+
+            if (pair.Equals(default(KeyValuePair<Vector2, Entity>)))
+            {
+                return null;
+            }
+
+            return pair.Value;
         }
 
         /// <summary>
@@ -165,7 +172,7 @@ namespace ChessDemo.Map
         /// <param name="obj"></param>
         public void AddObjectToCurrentPosition(Entity obj)
         {
-            PlacedObjects.Add(obj, currentPosition);
+            PlacedObjects.Add(currentPosition, obj);
         }
 
         /// <summary>
@@ -186,7 +193,7 @@ namespace ChessDemo.Map
         /// <param name="y"></param>
         public void AddObject(Entity obj, int x, int y)
         {
-            PlacedObjects.Add(obj, new Vector2(x, y));
+            PlacedObjects.Add(new Vector2(x, y), obj);
         }
 
         /// <summary>
@@ -243,11 +250,11 @@ namespace ChessDemo.Map
             }
 
             // Draw objects
-            foreach (Entity entity in PlacedObjects.Keys)
+            foreach (var pair in PlacedObjects)
             {
-                Vector2 position = PlacedObjects[entity];
+                Vector2 position = pair.Key;
                 Point point = GetPointForTile(position);
-                batch.Draw(entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), Color.White);
+                batch.Draw(pair.Value.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), Color.White);
             }
 
             for (var x = 0; x < Width; x++)

@@ -48,8 +48,10 @@
     <Compile Include="Entities\MoveBehavior.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input\MouseProcessor.cs" />
+    <Compile Include="Map\PlacedObjectList.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\TileMap.cs" />
+    <Compile Include="Map\Vector2Comparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
