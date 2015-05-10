@@ -15,14 +15,14 @@ namespace ChessDemo
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         TileMap tileMap;
-        ChessEntityFactory entityFactory;
+        ChessInitializer entityFactory;
 
         int KeyboundCameraIncrement = 3;
 
         public Game1()
         {
             tileMap = new TileMap(GetTiles());
-            entityFactory = new ChessEntityFactory();
+            entityFactory = new ChessInitializer();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -63,12 +63,26 @@ namespace ChessDemo
 
             entityFactory.LoadContent(Content);
 
+
             //Initializing Entity Positions.  This should probably move.
-            List<Entity> initialEntities = entityFactory.InitialChessLayout();
+            List<Entity> initialEntities = entityFactory.InitializeChessLayout();
+
+            //Initializing Teams... ""
+            List<Team> initialTeams = entityFactory.InitializeChessTeams();
 
             foreach(Entity e in initialEntities)
             {
                 tileMap.AddObject(e, tileMap.GetTileForPoint(e.Position));
+
+                //If it's on the top half of the map, add to top team.  Otherwise bottom team.
+                if (e.Position.Y < 684)
+                {
+                    tileMap.AssignTeam(e, initialTeams[0]);
+                }
+                else
+                {
+                    tileMap.AssignTeam(e, initialTeams[1]);
+                }
             }
         }
 

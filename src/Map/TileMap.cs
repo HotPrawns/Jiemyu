@@ -40,8 +40,11 @@ namespace ChessDemo.Map
 
         private MouseProcessor mouseProcessor = new MouseProcessor();
 
-        // TODO: Replace with actual object representation, rather than just generic object
+        //Dictionary containing all entities and their positions on the map
         Dictionary<Entity, Vector2> PlacedObjects = new Dictionary<Entity, Vector2>();
+
+        //DIctionary containing all entities and the team that they belong to
+        Dictionary<Entity, Team> TeamDictionary = new Dictionary<Entity, Team>();
 
         public Texture2D HighlightTexture;
 
@@ -192,6 +195,16 @@ namespace ChessDemo.Map
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="team"></param>
+        public void AssignTeam(Entity entity, Team team)
+        {
+            TeamDictionary.Add(entity, team);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="batch"></param>
         public void Draw(SpriteBatch batch)
         {
@@ -237,7 +250,7 @@ namespace ChessDemo.Map
 
                     if (possibleMoves.Any(move => move.X == x && move.Y == y))
                     {
-                        batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.Azure);
+                        batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), TeamDictionary[selectedEntity].color);
                     }
                 }
             }

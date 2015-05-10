@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ChessDemo.Entities;
 using ChessDemo.Entities.Chess;
 using Microsoft.Xna.Framework;
+using ChessDemo.Map;
 
-namespace ChessDemo.Entities
+namespace ChessDemo
 {
-    class ChessEntityFactory
+    class ChessInitializer
     {
         List<Texture2D> entityTextures = new List<Texture2D>();
 
@@ -17,14 +19,19 @@ namespace ChessDemo.Entities
             entityTextures.Add(texture);
         }
 
-        public List<Entity> InitialChessLayout()
+        public List<Entity> InitializeChessLayout()
         {
             List<Entity> entityList = new List<Entity>();
 
             // Pawns Everywhere
             for (int x = 2*101; x < 10*101; x += 101)
             {
-                entityList.Add(GenerateCatPawn(x, (int)(3.6*87)));
+                //Top
+                entityList.Add(GenerateCatPawn(x, (int)(3.6 * 87)));
+
+                //Bottom
+                entityList.Add(GenerateCatPawn(x, (int)(8.6 * 87)));
+
             }
 
             // Rook me Amadeus 
@@ -44,7 +51,25 @@ namespace ChessDemo.Entities
             return entityList;
         }
 
+        public List<Team> InitializeChessTeams()
+        {
+            List<Team> teamList = new List<Team>();
 
+            //Team 1 (Top)
+            Team top = new Team();
+            top.name = "top";
+            top.color = Color.HotPink;
+            teamList.Add(top);
+
+            //Team 2 (Bottom)
+            Team bot = new Team();
+            bot.name = "bottom";
+            bot.color = Color.LimeGreen;
+            teamList.Add(bot);
+
+            return teamList;
+
+        }
 
         private Entity GenerateCatPawn(int x, int y)
         {
