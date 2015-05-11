@@ -257,8 +257,7 @@ namespace ChessDemo.Map
                     {
                         batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
-
-                    if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))))
+                    else if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))))
                     {
                         batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
