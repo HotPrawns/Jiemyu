@@ -43,11 +43,12 @@
     <Compile Include="Entities\Chess\Pawn.cs" />
     <Compile Include="Entities\Chess\Queen.cs" />
     <Compile Include="Entities\Chess\Rook.cs" />
-    <Compile Include="Entities\ChessEntityFactory.cs" />
+    <Compile Include="ChessInitializer.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\MoveBehavior.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input\MouseProcessor.cs" />
+    <Compile Include="Map\Team.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\TileMap.cs" />
     <Compile Include="Program.cs" />
