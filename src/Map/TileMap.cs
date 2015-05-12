@@ -43,7 +43,7 @@ namespace ChessDemo.Map
         //Dictionary containing all entities and their positions on the map
         Dictionary<Entity, Vector2> PlacedObjects = new Dictionary<Entity, Vector2>();
 
-        //DIctionary containing all entities and the team that they belong to
+        //Dictionary containing all entities and the team that they belong to
         Dictionary<Entity, Team> TeamDictionary = new Dictionary<Entity, Team>();
 
         public Texture2D HighlightTexture;
