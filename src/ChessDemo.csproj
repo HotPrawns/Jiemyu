@@ -38,6 +38,9 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Behaviors\AttackBehavior.cs" />
+    <Compile Include="Entities\Behaviors\CustomMoveBehavior.cs" />
+    <Compile Include="Entities\Behaviors\MoveAttack.cs" />
     <Compile Include="Entities\Chess\Bishop.cs" />
     <Compile Include="Entities\Chess\King.cs" />
     <Compile Include="Entities\Chess\Pawn.cs" />
@@ -45,12 +48,17 @@
     <Compile Include="Entities\Chess\Rook.cs" />
     <Compile Include="ChessInitializer.cs" />
     <Compile Include="Entities\Entity.cs" />
-    <Compile Include="Entities\MoveBehavior.cs" />
+    <Compile Include="Entities\Behaviors\MoveBehavior.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input\MouseProcessor.cs" />
+    <Compile Include="Map\MoveList.cs" />
+    <Compile Include="Map\MoveCalculator.cs" />
+    <Compile Include="Map\Move.cs" />
+    <Compile Include="Map\RenderObject.cs" />
     <Compile Include="Map\Team.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\TileMap.cs" />
+    <Compile Include="Map\Vector2Comparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

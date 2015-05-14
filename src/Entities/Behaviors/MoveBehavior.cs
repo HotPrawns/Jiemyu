@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ChessDemo.Entities
+namespace ChessDemo.Entities.Behaviors
 {
     class MoveBehavior
     {
@@ -52,7 +52,7 @@ namespace ChessDemo.Entities
         /// that an entity can move.
         /// </summary>
         /// <returns></returns>
-        public Vector2[] GetAvailableMovements(int max)
+        public virtual Vector2[] GetAvailableMovements(int max)
         {
             List<Vector2> moves = new List<Vector2>();
 
