@@ -82,5 +82,15 @@ namespace ChessDemo.Entities
         {
             return _MoveBehavior.GetAvailableMovements(max);
         }
+
+        /// <summary>
+        /// Attacks another entity.
+        /// </summary>
+        /// <param name="targetEntity"></param>
+        public void Attack(Entity targetEntity)
+        {
+            // For now do a simple calculation for damage
+            targetEntity.HitPoints = (int) (targetEntity.HitPoints - this.AttackBehavior.Damage);
+        }
     }
 }

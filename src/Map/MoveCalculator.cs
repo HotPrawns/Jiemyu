@@ -78,9 +78,16 @@ namespace ChessDemo.Map
                         currentPoint += direction;
                         nextPoint += direction;
 
-
-                        if (map.GetEntityFor(entityTile + currentPoint) != null)
+                        var otherEntity = map.GetEntityFor(entityTile + currentPoint);
+                        if (otherEntity != null)
                         {
+                            // If on the same team, don't include this point
+                            if (map.TeamDictionary[otherEntity] == map.TeamDictionary[entity])
+                            {
+                                nextPoint = direction;
+                                currentPoint -= direction;
+                            }
+
                             break;
                         }
                     }
