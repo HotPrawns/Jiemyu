@@ -46,7 +46,7 @@
     <Compile Include="Entities\Chess\Pawn.cs" />
     <Compile Include="Entities\Chess\Queen.cs" />
     <Compile Include="Entities\Chess\Rook.cs" />
-    <Compile Include="Entities\ChessEntityFactory.cs" />
+    <Compile Include="ChessInitializer.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Behaviors\MoveBehavior.cs" />
     <Compile Include="Game1.cs" />
@@ -55,6 +55,7 @@
     <Compile Include="Map\MoveCalculator.cs" />
     <Compile Include="Map\Move.cs" />
     <Compile Include="Map\RenderObject.cs" />
+    <Compile Include="Map\Team.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\TileMap.cs" />
     <Compile Include="Map\Vector2Comparer.cs" />

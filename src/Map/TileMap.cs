@@ -53,6 +53,8 @@ namespace ChessDemo.Map
         // Public readonly values useful for calculations
         public List<RenderObject> ObjectsInMap { get{ return PlacedObjects;  } }
         public Vector2 CurrentSelectedPosition { get { return selectedPosition;  } }
+        //Dictionary containing all entities and the team that they belong to
+        Dictionary<Entity, Team> TeamDictionary = new Dictionary<Entity, Team>();
 
         public Texture2D HighlightTexture;
 
@@ -208,6 +210,16 @@ namespace ChessDemo.Map
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="team"></param>
+        public void AssignTeam(Entity entity, Team team)
+        {
+            TeamDictionary.Add(entity, team);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="batch"></param>
         public void Draw(SpriteBatch batch)
         {
@@ -260,7 +272,7 @@ namespace ChessDemo.Map
 
                     if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))))
                     {
-                        batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
+                        batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), TeamDictionary[selectedEntity].color);
                     }
                 }
             }
