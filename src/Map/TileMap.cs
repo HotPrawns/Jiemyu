@@ -131,7 +131,7 @@ namespace ChessDemo.Map
                     MoveEntity(currentPosition);
                     isAction = true;
                 }
-                else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)))
+                else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null)
                 {
                     AttackEntity(currentPosition);
                     isAction = true;
@@ -181,6 +181,12 @@ namespace ChessDemo.Map
         private void AttackEntity(Vector2 position)
         {
             var targetEntity = GetEntityFor(position);
+
+            if (targetEntity == null)
+            {
+                return;
+            }
+
             selectedEntity.Attack(targetEntity);
 
             if (targetEntity.HitPoints <= 0)
@@ -329,9 +335,9 @@ namespace ChessDemo.Map
                     {
                         batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
-                    else if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))))
+                    else if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))) && GetEntityFor(new Vector2(x,y)) != null)
                     {
-                        batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), TeamDictionary[selectedEntity].color);
+                        batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.IndianRed);
                     }
                 }
             }
@@ -344,7 +350,7 @@ namespace ChessDemo.Map
             {
                 Vector2 position = renderObject.Location;
                 Point point = GetPointForTile(position);
-                batch.Draw(renderObject.Entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), Color.White);
+                batch.Draw(renderObject.Entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), TeamDictionary[renderObject.Entity].color);
             }
 
             for (var x = 0; x < Width; x++)

@@ -30,7 +30,9 @@ namespace ChessDemo
                 entityList.Add(GenerateCatPawn(x, (int)(3.6 * 87)));
 
                 //Bottom
-                entityList.Add(GenerateCatPawn(x, (int)(8.6 * 87)));
+                var pawn = GenerateCatPawn(x, (int)(8.6 * 87));
+                pawn.Forward = new Vector2(0, -1);
+                entityList.Add(pawn);
 
             }
 
@@ -58,13 +60,13 @@ namespace ChessDemo
             //Team 1 (Top)
             Team top = new Team();
             top.name = "top";
-            top.color = Color.HotPink;
+            top.color = Color.Black;
             teamList.Add(top);
 
             //Team 2 (Bottom)
             Team bot = new Team();
             bot.name = "bottom";
-            bot.color = Color.LimeGreen;
+            bot.color = Color.White;
             teamList.Add(bot);
 
             return teamList;
