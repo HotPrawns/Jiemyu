@@ -54,6 +54,47 @@ namespace ChessDemo.Map
             }
 
             var moveAttack = entity.AttackBehavior as MoveAttack;
+
+            if (moveAttack != null)
+            {
+                MoveList moves = new MoveList();
+                foreach (var direction in moveAttack.MoveBehavior.GetAvailableMovements(map.Width))
+                {
+                    var mapDirection = Move.ToMapDirection(direction, entity.Forward);
+                    moves.Add(mapDirection);
+                }
+
+                foreach (var move in moves)
+                {
+                    var target = move.Vector;
+                    var direction = move.DirectionalVector;
+                    var currentPoint = new Vector2(0, 0);
+                    var nextPoint = currentPoint + direction;
+                    var entityTile = map.ObjectsInMap.First(r => r.Entity == entity).Location;
+
+                    while (currentPoint != target &&
+                        map.HasTile(entityTile + nextPoint))
+                    {
+                        currentPoint += direction;
+                        nextPoint += direction;
+
+                        var otherEntity = map.GetEntityFor(entityTile + currentPoint);
+                        if (otherEntity != null)
+                        {
+                            // If on the same team, don't include this point
+                            if (map.TeamDictionary[otherEntity] == map.TeamDictionary[entity])
+                            {
+                                nextPoint = direction;
+                                currentPoint -= direction;
+                            }
+
+                            break;
+                        }
+                    }
+
+                    _Attacks.Add(new Move(currentPoint));
+                }
+            }
         }
 
         private void CalculateMoves()

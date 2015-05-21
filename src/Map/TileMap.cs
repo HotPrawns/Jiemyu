@@ -16,6 +16,7 @@ namespace ChessDemo.Map
         public TileMap(Tile[,] tiles)
         {
             map = tiles;
+            TeamDictionary = new Dictionary<Entity, Team>();
 
             // Set up any mouse related event handlers
             mouseProcessor.Clicked += new MouseEventHandler(MouseClicked);
@@ -39,7 +40,7 @@ namespace ChessDemo.Map
 
         private Entity selectedEntity;
 
-        private MoveList possibleMoves = new MoveList();
+        private MoveCalculator moveCalculator = null;
 
         private volatile bool selectionUpdated;
 
@@ -53,8 +54,9 @@ namespace ChessDemo.Map
         // Public readonly values useful for calculations
         public List<RenderObject> ObjectsInMap { get{ return PlacedObjects;  } }
         public Vector2 CurrentSelectedPosition { get { return selectedPosition;  } }
+
         //Dictionary containing all entities and the team that they belong to
-        Dictionary<Entity, Team> TeamDictionary = new Dictionary<Entity, Team>();
+        public Dictionary<Entity, Team> TeamDictionary { get; private set; }
 
         public Texture2D HighlightTexture;
 
@@ -63,26 +65,44 @@ namespace ChessDemo.Map
 
         Tile[,] map;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Width
         {
             get { return map.GetLength(1); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Height
         {
             get { return map.GetLength(0); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="texture"></param>
         public void AddTileTexture(Texture2D texture)
         {
             tileTextures.Add(texture);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="texture"></param>
         public void AddDecalTexture(Texture2D texture)
         {
             decalTextures.Add(texture);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cameraDirection"></param>
         public void MoveCamera(Vector2 cameraDirection)
         {
             cameraPosition += cameraDirection;
@@ -97,13 +117,28 @@ namespace ChessDemo.Map
                 cameraPosition.Y = (Height - TILESHIGH) * TILEHEIGHT - BOTTOMMARGIN;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="processor"></param>
         private void MouseClicked(MouseProcessor processor)
         {
-            if (possibleMoves.Any(p => p.InMove(CurrentSelectedPosition, currentPosition)))
+            bool isAction = false;
+            if (moveCalculator != null)
             {
-                MoveEntity(currentPosition);
+                if (moveCalculator.GetAvailableMoves().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)))
+                {
+                    MoveEntity(currentPosition);
+                    isAction = true;
+                }
+                else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null)
+                {
+                    AttackEntity(currentPosition);
+                    isAction = true;
+                }
             }
-            else
+            
+            if (!isAction)
             {
                 selectedPosition = currentPosition;
             }
@@ -111,6 +146,10 @@ namespace ChessDemo.Map
             selectionUpdated = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
         public void UpdateCursor(MouseState state)
         {
             Point position = state.Position;
@@ -119,6 +158,10 @@ namespace ChessDemo.Map
             mouseProcessor.Update(state);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newPosition"></param>
         private void MoveEntity(Vector2 newPosition)
         {
             // Update placed objects
@@ -128,6 +171,31 @@ namespace ChessDemo.Map
             // Update local references
             selectedPosition = new Vector2(-1,-1);
             selectedEntity.Position = GetPointForTile(newPosition);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private void AttackEntity(Vector2 position)
+        {
+            var targetEntity = GetEntityFor(position);
+
+            if (targetEntity == null)
+            {
+                return;
+            }
+
+            selectedEntity.Attack(targetEntity);
+
+            if (targetEntity.HitPoints <= 0)
+            {
+                PlacedObjects.Remove(PlacedObjects.Find(r => r.Entity == targetEntity));
+
+                // For chess, attacks move everything into the space. So update the selectedEntity
+                MoveEntity(position);
+            }
         }
 
         public Vector2 GetTileForPoint(Point point)
@@ -230,15 +298,13 @@ namespace ChessDemo.Map
 
                 // Update the selected entity
                 selectedEntity = GetEntityFor(selectedPosition);
+
+                // If selection updated in some way, then update the moveCalculator
+                moveCalculator = new MoveCalculator(selectedEntity, this);
             }
 
-            // Every frame, possible moves gets updated.
-            // TODO: Add a flag to indicate when this needs to be updated.
-            // It only needs to update if anything moves on the board, or
-            // the selection changes.
-            MoveCalculator moveCalculator = new MoveCalculator(selectedEntity, this);
-            possibleMoves = moveCalculator.GetAvailableMoves();
-            var attackMoves = moveCalculator.GetAvailableAttackLocations();
+            var possibleMoves = (moveCalculator == null) ? new MoveList() : moveCalculator.GetAvailableMoves();
+            var attackMoves = (moveCalculator == null) ? new MoveList() : moveCalculator.GetAvailableAttackLocations();
 
             for (var x = 0; x < Width; x++)
             {
@@ -269,10 +335,9 @@ namespace ChessDemo.Map
                     {
                         batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
-
-                    if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))))
+                    else if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))) && GetEntityFor(new Vector2(x,y)) != null)
                     {
-                        batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), TeamDictionary[selectedEntity].color);
+                        batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.IndianRed);
                     }
                 }
             }
@@ -285,7 +350,7 @@ namespace ChessDemo.Map
             {
                 Vector2 position = renderObject.Location;
                 Point point = GetPointForTile(position);
-                batch.Draw(renderObject.Entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), Color.White);
+                batch.Draw(renderObject.Entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), TeamDictionary[renderObject.Entity].color);
             }
 
             for (var x = 0; x < Width; x++)
