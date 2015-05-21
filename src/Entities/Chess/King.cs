@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ChessDemo.Entities.Behaviors;
+using ChessDemo.Entities.Behaviors.Move;
+using ChessDemo.Entities.Behaviors.Attack;
 
 namespace ChessDemo.Entities.Chess
 {

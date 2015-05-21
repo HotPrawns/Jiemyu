@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ChessDemo.Entities.Behaviors
+namespace ChessDemo.Entities.Behaviors.Move
 {
     class CustomMoveBehavior : MoveBehavior
     {

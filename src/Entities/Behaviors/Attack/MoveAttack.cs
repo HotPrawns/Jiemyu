@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ChessDemo.Entities.Behaviors.Move;
 
-namespace ChessDemo.Entities.Behaviors
+namespace ChessDemo.Entities.Behaviors.Attack
 {
     /// <summary>
     /// An attack with an attached move behavior. The move behavior

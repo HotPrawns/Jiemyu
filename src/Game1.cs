@@ -159,7 +159,6 @@ namespace ChessDemo
             {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
             {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
         };
-        private readonly object ScreenManager;
 
 
         /// <summary>

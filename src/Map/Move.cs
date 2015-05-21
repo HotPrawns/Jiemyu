@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ChessDemo.Entities.Behaviors.Move;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,6 +41,9 @@ namespace ChessDemo.Map
         }
 
         uint? _Distance = null;
+        private Vector2 currentPoint;
+        private Entities.Behaviors.Move.MoveBehavior.MoveCapabilities moveCapabilities;
+
         public uint Distance
         {
             get
@@ -69,6 +73,12 @@ namespace ChessDemo.Map
             Vector = vector;
         }
 
+        public Move(Vector2 vector, MoveBehavior.MoveCapabilities moveCapabilities)
+        {
+            Vector = vector;
+            this.moveCapabilities = moveCapabilities;
+        }
+
         /// <summary>
         /// Returns true if a given relative point is within this move
         /// </summary>
@@ -79,6 +89,12 @@ namespace ChessDemo.Map
             if (relativePoint.X == 0 && relativePoint.Y == 0)
             {
                 return false;
+            }
+
+            // If an entity can jump, just check the end points
+            if (this.moveCapabilities.HasFlag(MoveBehavior.MoveCapabilities.Jump))
+            {
+                return relativePoint == Vector;
             }
 
             bool inX = InRange(Vector.X, relativePoint.X);

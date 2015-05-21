@@ -1,4 +1,5 @@
-﻿using ChessDemo.Entities.Behaviors;
+﻿using ChessDemo.Entities.Behaviors.Attack;
+using ChessDemo.Entities.Behaviors.Move;
 using System;
 using System.Collections.Generic;
 using System.Linq;

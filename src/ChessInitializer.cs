@@ -50,6 +50,10 @@ namespace ChessDemo
             // King
             entityList.Add(GenerateEntity<King>(5 * 101, (int)3 * 87, entityTextures[4]));
 
+            // Oh holy knight
+            entityList.Add(GenerateEntity<Knight>(3 * 101, (int)3 * 87, entityTextures[5]));
+            entityList.Add(GenerateEntity<Knight>(8 * 101, (int)3 * 87, entityTextures[5]));
+
             return entityList;
         }
 
@@ -114,6 +118,7 @@ namespace ChessDemo
             AddEntityTexture(Content.Load<Texture2D>("Tree Tall"));
             AddEntityTexture(Content.Load<Texture2D>("Character Princess Girl"));
             AddEntityTexture(Content.Load<Texture2D>("Gem Blue"));
+            AddEntityTexture(Content.Load<Texture2D>("Enemy Bug"));
         }
     }
 }
