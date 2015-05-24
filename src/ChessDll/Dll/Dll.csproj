@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C597B052-47AB-40BA-8C99-D1EB8292CB74}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dll</RootNamespace>
+    <AssemblyName>Dll</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MonoGamePlatform>Windows</MonoGamePlatform>
+    <MonoGameContentBuilderExe>
+    </MonoGameContentBuilderExe>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Windows\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Windows\Release\</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Behaviors\AttackBehavior.cs" />
+    <Compile Include="Entities\Behaviors\Attack\AttackBehavior.cs" />
+    <Compile Include="Entities\Behaviors\Attack\MoveAttack.cs" />
+    <Compile Include="Entities\Behaviors\CustomMoveBehavior.cs" />
+    <Compile Include="Entities\Behaviors\MoveAttack.cs" />
+    <Compile Include="Entities\Behaviors\MoveBehavior.cs" />
+    <Compile Include="Entities\Behaviors\Move\CustomMoveBehavior.cs" />
+    <Compile Include="Entities\Behaviors\Move\MoveBehavior.cs" />
+    <Compile Include="Entities\Chess\Bishop.cs" />
+    <Compile Include="Entities\Chess\King.cs" />
+    <Compile Include="Entities\Chess\Knight.cs" />
+    <Compile Include="Entities\Chess\Pawn.cs" />
+    <Compile Include="Entities\Chess\Queen.cs" />
+    <Compile Include="Entities\Chess\Rook.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Game1.cs" />
+    <Compile Include="Map\Move.cs" />
+    <Compile Include="Map\MoveCalculator.cs" />
+    <Compile Include="Map\MoveList.cs" />
+    <Compile Include="Map\RenderObject.cs" />
+    <Compile Include="Map\Team.cs" />
+    <Compile Include="Map\Tile.cs" />
+    <Compile Include="Map\TileMap.cs" />
+    <Compile Include="Map\Vector2Comparer.cs" />
+    <Compile Include="Network\Message.cs" />
+    <Compile Include="Network\Messages\EntityMessage.cs" />
+    <Compile Include="Network\Messages\MoveMessage.cs" />
+    <Compile Include="Network\MessageUtil.cs" />
+    <Compile Include="Network\TaskQueue.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Map\.MoveCalculator.cs.un~" />
+    <None Include="Map\.MoveList.cs.un~" />
+    <None Include="Map\.TileMap.cs.un~" />
+    <None Include="Map\MoveCalculator.cs~" />
+    <None Include="Map\MoveList.cs~" />
+    <None Include="Map\TileMap.cs~" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
