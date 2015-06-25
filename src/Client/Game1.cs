@@ -16,14 +16,14 @@ namespace ChessDemo
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         MapObject tileMap;
-        ChessInitializer entityFactory;
+        JiemyuAlphaInitializer entityFactory;
 
         int KeyboundCameraIncrement = 3;
 
         public Game1()
         {
             tileMap = new MapObject(GetTiles());
-            entityFactory = new ChessInitializer();
+            entityFactory = new JiemyuAlphaInitializer();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -68,10 +68,10 @@ namespace ChessDemo
 
 
             //Initializing Entity Positions.  This should probably move.
-            List<Entity> initialEntities = entityFactory.InitializeChessLayout();
+            List<Entity> initialEntities = entityFactory.InitializeJiemyuAlpha1Layout();
 
             //Initializing Teams... ""
-            List<Team> initialTeams = entityFactory.InitializeChessTeams();
+            List<Team> initialTeams = entityFactory.InitializeJiemyuAlpha1Teams();
 
             foreach(Entity e in initialEntities)
             {

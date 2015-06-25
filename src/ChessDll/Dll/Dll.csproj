@@ -56,6 +56,8 @@
     <Compile Include="Entities\Chess\Queen.cs" />
     <Compile Include="Entities\Chess\Rook.cs" />
     <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Jiemyu\PansyC.cs" />
+    <Compile Include="Entities\Jiemyu\SoldierA.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Map\Move.cs" />
     <Compile Include="Map\MoveCalculator.cs" />
