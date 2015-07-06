@@ -94,7 +94,8 @@ namespace ChessDemo
 
             if (GameStateManager.Instance.CurrentState != GameStates.Uninitialized)
             {
-                gameStateMap[GameStateManager.Instance.CurrentState].Draw(gameTime);
+                var gameState = gameStateMap[GameStateManager.Instance.CurrentState];
+                gameState.Draw(gameTime);
             }
         }
     }

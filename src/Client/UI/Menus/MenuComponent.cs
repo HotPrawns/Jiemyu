@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Storage;
 
 namespace ChessDemo.UI.Menus
 {
-    public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    public class MenuComponent : DrawableGameComponent
     {
         string[] menuItems;
         int selectedIndex;
@@ -23,11 +23,16 @@ namespace ChessDemo.UI.Menus
         KeyboardState oldKeyboardState;
 
         SpriteBatch spriteBatch;
-        SpriteFont spriteFont;
+        TextRenderer textRenderer;
+
+        Texture2D backgroundTexture;
+        Texture2D highlightTexture;
 
         Vector2 position;
         float width = 0f;
         float height = 0f;
+
+        public event EventHandler ItemSelected = new EventHandler((e, a) => { });
 
         public int SelectedIndex
         {
@@ -42,15 +47,29 @@ namespace ChessDemo.UI.Menus
             }
         }
 
+        /// <summary>
+        /// Extra padding between each line
+        /// </summary>
+        public int LinePadding
+        {
+            get;
+            set;
+        }
+
         public MenuComponent(Game game,
             SpriteBatch spriteBatch,
-            SpriteFont spriteFont,
+            TextRenderer textRenderer,
+            Texture2D backgroundTexture,
+            Texture2D highlightTexture,
             string[] menuItems)
             : base(game)
         {
             this.spriteBatch = spriteBatch;
-            this.spriteFont = spriteFont;
+            this.textRenderer = textRenderer;
             this.menuItems = menuItems;
+            this.backgroundTexture = backgroundTexture;
+            this.highlightTexture = highlightTexture;
+            LinePadding = 5;
             MeasureMenu();
         }
 
@@ -60,10 +79,10 @@ namespace ChessDemo.UI.Menus
             width = 0;
             foreach (string item in menuItems)
             {
-                Vector2 size = spriteFont.MeasureString(item);
+                Vector2 size = textRenderer.MeasureString(item);
                 if (size.X > width)
                     width = size.X;
-                height += spriteFont.LineSpacing + 5;
+                height += textRenderer.LineSpacing + LinePadding;
             }
 
             position = new Vector2(
@@ -98,6 +117,12 @@ namespace ChessDemo.UI.Menus
                 if (selectedIndex < 0)
                     selectedIndex = menuItems.Length - 1;
             }
+
+            if (CheckKey(Keys.Enter))
+            {
+                ItemSelected(this, new EventArgs());
+            }
+
             base.Update(gameTime);
 
             oldKeyboardState = keyboardState;
@@ -107,20 +132,26 @@ namespace ChessDemo.UI.Menus
         {
             base.Draw(gameTime);
             Vector2 location = position;
-            Color tint;
+            Texture2D texture;
 
             for (int i = 0; i < menuItems.Length; i++)
             {
                 if (i == selectedIndex)
-                    tint = hilite;
+                    texture = highlightTexture;
                 else
-                    tint = normal;
-                spriteBatch.DrawString(
-                    spriteFont,
-                    menuItems[i],
-                    location,
-                    tint);
-                location.Y += spriteFont.LineSpacing + 5;
+                    texture = backgroundTexture;
+
+                Rectangle rect = textRenderer.MeasureStringRect(menuItems[i]);
+                rect.Location = new Point((int) location.X, (int) location.Y);
+
+                spriteBatch.Draw(texture, rect, Color.White);
+
+                textRenderer.DrawText(spriteBatch,
+                    (int) location.X,
+                    (int) location.Y,
+                    menuItems[i]);
+
+                location.Y += textRenderer.LineSpacing + LinePadding;
             }
         }
     }

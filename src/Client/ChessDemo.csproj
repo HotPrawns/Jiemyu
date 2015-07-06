@@ -54,8 +54,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="UI\FontFile.cs" />
     <Compile Include="UI\Menus\MenuComponent.cs" />
     <Compile Include="UI\Menus\MenuElement.cs" />
+    <Compile Include="UI\TextRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

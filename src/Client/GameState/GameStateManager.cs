@@ -15,7 +15,7 @@ namespace ChessDemo.GameState
 
     class GameStateManager
     {
-        private static GameStateManager _instance = new GameStateManager(GameStates.InGame);
+        private static GameStateManager _instance = new GameStateManager(GameStates.MainMenu);
         public static GameStateManager Instance {
             get {
                 return _instance;
