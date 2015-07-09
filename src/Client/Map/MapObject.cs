@@ -53,12 +53,13 @@ namespace ChessDemo.Map
             bool isAction = false;
             if (moveCalculator != null)
             {
-                if (moveCalculator.GetAvailableMoves().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)))
+                if (moveCalculator.GetAvailableMoves().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
                 {
                     MoveEntity(currentPosition);
                     isAction = true;
                 }
-                else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null)
+                else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null
+                    && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
                 {
                     AttackEntity(currentPosition);
                     isAction = true;
@@ -68,6 +69,10 @@ namespace ChessDemo.Map
             if (!isAction)
             {
                 selectedPosition = currentPosition;
+            }
+            else
+            {
+                TurnManager.Instance.AdvanceTurn();
             }
 
             selectionUpdated = true;
@@ -151,7 +156,7 @@ namespace ChessDemo.Map
             {
                 Vector2 position = renderObject.Location;
                 Point point = GetPointForTile(position);
-                batch.Draw(renderObject.Entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), TeamDictionary[renderObject.Entity].Color);
+                batch.Draw(renderObject.Entity.EntityTexture, new Rectangle(point.X, point.Y, TILEWIDTH, TILEHEIGHT), TurnManager.Instance.TeamDictionary[renderObject.Entity].Color);
             }
 
             for (var x = 0; x < Width; x++)

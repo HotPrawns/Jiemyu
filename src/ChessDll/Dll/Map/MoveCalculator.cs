@@ -91,7 +91,7 @@ namespace ChessDll.Map
                         {
                             var otherEntity = map.GetEntityFor(entityTile + target);
 
-                            if (otherEntity == null || map.TeamDictionary[otherEntity] != map.TeamDictionary[entity])
+                            if (otherEntity == null || TurnManager.Instance.TeamDictionary[otherEntity] != TurnManager.Instance.TeamDictionary[entity])
                             {
                                 _Attacks.Add(new Move(target, entity.MoveBehavior.Capabilities));
                             }
@@ -109,7 +109,7 @@ namespace ChessDll.Map
                             if (otherEntity != null)
                             {
                                 // If on the same team, don't include this point
-                                if (map.TeamDictionary[otherEntity] == map.TeamDictionary[entity])
+                                if (TurnManager.Instance.TeamDictionary[otherEntity] == TurnManager.Instance.TeamDictionary[entity])
                                 {
                                     nextPoint = direction;
                                     currentPoint -= direction;

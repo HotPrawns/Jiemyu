@@ -15,7 +15,6 @@ namespace ChessDll.Map
         public TileMap(Tile[,] tiles)
         {
             map = tiles;
-            TeamDictionary = new Dictionary<Entity, Team>();
         }
 
         protected const int TILEHEIGHT = 171;
@@ -45,9 +44,6 @@ namespace ChessDll.Map
         // Public readonly values useful for calculations
         public List<RenderObject> ObjectsInMap { get{ return PlacedObjects;  } }
         public Vector2 CurrentSelectedPosition { get { return selectedPosition;  } }
-
-        //Dictionary containing all entities and the team that they belong to
-        public Dictionary<Entity, Team> TeamDictionary { get; private set; }
 
         protected Tile[,] map;
 
@@ -208,17 +204,7 @@ namespace ChessDll.Map
         {
             PlacedObjects.Add(new RenderObject(obj, new Vector2(x,y)));
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="team"></param>
-        public void AssignTeam(Entity entity, Team team)
-        {
-            TeamDictionary.Add(entity, team);
-        }
-
+        
         public bool HasTile(Vector2 tile)
         {
             int xPadding = (Width - TILESWIDE) / 2;
