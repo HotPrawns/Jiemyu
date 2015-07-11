@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ChessDemo.UI;
+using ChessDemo.UI.Menus;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -8,35 +12,82 @@ namespace ChessDemo.GameState
 {
     class MainMenuGameState : DrawableGameComponent
     {
+        SpriteBatch spriteBatch;
+        TextRenderer textRenderer;
+
+        string[] menuItems = { "Start Game", "Close" };
+
+        MenuComponent menu;
+
+        Texture2D highlightTexture;
+        Texture2D backgroundTexture;
+
         public MainMenuGameState(Game game)
             : base(game)
         {
 
         }
 
-        public void Initialize()
+        /// <summary>
+        /// 
+        /// </summary>
+       override  public void Initialize()
         {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            
+            var fontFilePath = Path.Combine(Game.Content.RootDirectory, "calibri32.fnt");
+            using(var stream = TitleContainer.OpenStream(fontFilePath))
+            {
+                var fontFile = FontFile.Load(stream);
+                var fontTexture = Game.Content.Load<Texture2D>("calibri32_0.png");
 
+                textRenderer = new TextRenderer(fontFile, fontTexture);
+                stream.Close();
+            }
+
+            base.Initialize();
         }
 
-        public void LoadContent()
+        /// <summary>
+        /// 
+        /// </summary>
+        override protected void LoadContent()
         {
-
+            backgroundTexture = Game.Content.Load<Texture2D>("Brown Block");
+            highlightTexture = Game.Content.Load<Texture2D>("Dirt Block");
+            menu = new MenuComponent(Game, spriteBatch, textRenderer, backgroundTexture, highlightTexture, menuItems);
+            menu.ItemSelected += menu_ItemSelected;
         }
 
-        public void UnloadContent()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void menu_ItemSelected(object sender, EventArgs e)
         {
-
+            if (menu.SelectedIndex == 0)
+            {
+                GameStateManager.Instance.SetState(GameStates.InGame);
+            }
         }
 
-        public void Update(GameTime gameTime)
+        override protected void UnloadContent()
         {
-            throw new NotImplementedException();
+            menu = null;
         }
 
-        public void Draw(GameTime gameTime)
+        override public void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            menu.Update(gameTime);
+        }
+
+        override public void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+            menu.Draw(gameTime);
+            spriteBatch.End();
         }
     }
 }
