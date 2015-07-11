@@ -14,7 +14,7 @@ namespace ChessDemo.GameState
     class InGameGameState : DrawableGameComponent
     {
         MapObject tileMap;
-        ChessInitializer entityFactory;
+        JiemyuAlphaInitializer entityFactory;
 
         int KeyboundCameraIncrement = 3;
 
@@ -36,7 +36,7 @@ namespace ChessDemo.GameState
         override public void Initialize()
         {
             tileMap = new MapObject(GetTiles());
-            entityFactory = new ChessInitializer();
+            entityFactory = new JiemyuAlphaInitializer();
 
             base.Initialize();
         }

@@ -24,7 +24,8 @@ namespace ChessDll.Entities.Behaviors.Move
         {
             Diagonal = 0x1,
             Linear = 0x2,
-            Forward = 0x4
+            Forward = 0x4,
+            Standard = 0x8
         };
 
         /// <summary>
@@ -100,6 +101,36 @@ namespace ChessDll.Entities.Behaviors.Move
                         moves.Add(new Vector2(0, i));
                     }
                 }
+
+                if (IsFlagSet(MoveTypes.Standard))
+                {
+
+                    for (int i = 1; i <= max; i++)
+                    {
+                        int diagi = i - 1;
+                        //Currently structured so that they can only walk N E W S per distance unit
+                        Vector2 f = new Vector2(0, i);
+                        Vector2 b = new Vector2(0, -i);
+                        Vector2 l = new Vector2(-i, 0);
+                        Vector2 r = new Vector2(i, 0);
+                        //Uses diagi (i-1) since units cannot walk directly diagonal
+                        Vector2 rf = new Vector2(diagi, diagi);
+                        Vector2 lf = new Vector2(-diagi, diagi);
+                        Vector2 lb = new Vector2(-diagi, -diagi);
+                        Vector2 rb = new Vector2(diagi, -diagi);
+
+                        moves.Add(f);
+                        moves.Add(b);
+                        moves.Add(l);
+                        moves.Add(r);
+                        moves.Add(rf);
+                        moves.Add(lf);
+                        moves.Add(lb);
+                        moves.Add(rb);
+                    }
+
+
+                }     
             }
             else
             {

@@ -44,6 +44,7 @@
     <Compile Include="GameState\InGameGameState.cs" />
     <Compile Include="GameState\MainMenuGameState.cs" />
     <Compile Include="Input\MouseProcessor.cs" />
+    <Compile Include="JiemyuAlphaInitializer.cs" />
     <Compile Include="Map\MapObject.cs" />
     <Compile Include="Network\Client.cs" />
     <Compile Include="Network\NetworkManager.cs" />
