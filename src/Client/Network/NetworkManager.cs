@@ -1,11 +1,11 @@
-﻿using ChessDll.Network;
+﻿using JiemyuDll.Network;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace ChessDemo.Network
+namespace Jiemyu.Network
 {
     /// <summary>
     /// Network manager works to queue network messages in a thread safe way
@@ -23,7 +23,7 @@ namespace ChessDemo.Network
         /// </summary>
         private TaskQueue<Message> _Q = new TaskQueue<Message>(1);
 
-        private Client _client = new Client(ChessDll.Properties.Settings.Default.Port);
+        private Client _client = new Client(8800); // TODO: Client(JiemyuDll.Properties.Settings.Default.Port);
 
         /// <summary>
         /// 

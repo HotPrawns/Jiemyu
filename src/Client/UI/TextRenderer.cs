@@ -8,7 +8,7 @@ using System.Threading;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
-namespace ChessDemo.UI
+namespace Jiemyu.UI
 {
     /// <summary>
     /// Helper class to draw text using SpriteBatch

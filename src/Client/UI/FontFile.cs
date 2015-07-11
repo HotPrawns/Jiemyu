@@ -13,7 +13,7 @@ using System.Threading;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 
-namespace ChessDemo.UI
+namespace Jiemyu.UI
 {
     [Serializable]
     [XmlRoot("font")]

@@ -1,11 +1,11 @@
-﻿using ChessDll.Network;
+﻿using JiemyuDll.Network;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace ChessDemo.Network
+namespace Jiemyu.Network
 {
     public class MessageArgs : EventArgs
     {

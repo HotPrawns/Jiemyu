@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ChessDll.Map;
-using ChessDemo.Input;
+using JiemyuDll.Map;
+using Jiemyu.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace ChessDemo.Map
+namespace Jiemyu.Map
 {
     class MapObject : TileMap
     {

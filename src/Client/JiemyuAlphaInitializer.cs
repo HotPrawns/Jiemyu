@@ -1,6 +1,6 @@
-﻿using ChessDll.Entities;
-using ChessDll.Entities.Jiemyu;
-using ChessDll.Map;
+﻿using JiemyuDll.Entities;
+using JiemyuDll.Entities.Jiemyu;
+using JiemyuDll.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ChessDemo
+namespace Jiemyu
 {
     class JiemyuAlphaInitializer
     {

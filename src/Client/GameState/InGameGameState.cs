@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ChessDemo.Map;
-using ChessDll.Entities;
-using ChessDll.Map;
+using Jiemyu.Map;
+using JiemyuDll.Entities;
+using JiemyuDll.Map;
 using Microsoft.Xna.Framework.Input;
 
-namespace ChessDemo.GameState
+namespace Jiemyu.GameState
 {
     class InGameGameState : DrawableGameComponent
     {
@@ -61,10 +61,10 @@ namespace ChessDemo.GameState
             entityFactory.LoadContent(Game.Content);
 
             //Initializing Entity Positions.  This should probably move.
-            List<Entity> initialEntities = entityFactory.InitializeChessLayout();
+            List<Entity> initialEntities = entityFactory.InitializeJiemyuAlpha1Layout();
 
-            //Initializing Teams... ""
-            List<Team> initialTeams = entityFactory.InitializeChessTeams();
+            //Initializing Teams
+            List<Team> initialTeams = entityFactory.InitializeJiemyuAlpha1Teams();
 
             foreach (Entity e in initialEntities)
             {

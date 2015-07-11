@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Storage;
 
-namespace ChessDemo.UI.Menus
+namespace Jiemyu.UI.Menus
 {
     public class MenuComponent : DrawableGameComponent
     {

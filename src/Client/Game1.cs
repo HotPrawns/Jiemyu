@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using ChessDemo.Map;
-using ChessDll.Entities;
+using JiemyuDll.Entities;
 using System.Collections.Generic;
-using ChessDll.Map;
-using ChessDemo.GameState;
+using JiemyuDll.Map;
+using Jiemyu.GameState;
 
-namespace ChessDemo
+namespace Jiemyu
 {
     /// <summary>
     /// This is the main type for your game.

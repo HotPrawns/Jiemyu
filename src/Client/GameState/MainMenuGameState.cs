@@ -1,5 +1,5 @@
-﻿using ChessDemo.UI;
-using ChessDemo.UI.Menus;
+﻿using Jiemyu.UI;
+using Jiemyu.UI.Menus;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace ChessDemo.GameState
+namespace Jiemyu.GameState
 {
     class MainMenuGameState : DrawableGameComponent
     {

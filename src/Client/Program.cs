@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChessDemo
+namespace Jiemyu
 {
 #if WINDOWS || LINUX
     /// <summary>
