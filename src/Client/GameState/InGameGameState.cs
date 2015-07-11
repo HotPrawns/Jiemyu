@@ -73,11 +73,11 @@ namespace ChessDemo.GameState
                 //If it's on the top half of the map, add to top team.  Otherwise bottom team.
                 if (e.Position.Y < 684)
                 {
-                    tileMap.AssignTeam(e, initialTeams[0]);
+                    TurnManager.Instance.Add(e, initialTeams[0]);
                 }
                 else
                 {
-                    tileMap.AssignTeam(e, initialTeams[1]);
+                    TurnManager.Instance.Add(e, initialTeams[1]);
                 }
             }
 

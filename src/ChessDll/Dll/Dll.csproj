@@ -64,6 +64,7 @@
     <Compile Include="Map\Team.cs" />
     <Compile Include="Map\Tile.cs" />
     <Compile Include="Map\TileMap.cs" />
+    <Compile Include="Map\TurnManager.cs" />
     <Compile Include="Map\Vector2Comparer.cs" />
     <Compile Include="Network\Message.cs" />
     <Compile Include="Network\Messages\EntityMessage.cs" />
