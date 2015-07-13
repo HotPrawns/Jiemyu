@@ -1,5 +1,6 @@
 ﻿using JiemyuDll.Entities.Behaviors.Attack;
 using JiemyuDll.Entities.Behaviors.Move;
+using JiemyuDll.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -66,7 +67,7 @@ namespace JiemyuDll.Entities
         /// <summary>
         /// How far an entity can move, based on MoveBehavior
         /// </summary>
-        public int MoveDistance
+        public uint MoveDistance
         {
             get
             {
@@ -76,16 +77,6 @@ namespace JiemyuDll.Entities
             {
                 _MoveBehavior.MoveDistance = value;
             }
-        }
-
-        /// <summary>
-        /// Returns a list of points, relative to the current position of the entity, that 
-        /// can be moved to.
-        /// </summary>
-        /// <returns></returns>
-        public Vector2[] GetAvailableMovements(int max)
-        {
-            return _MoveBehavior.GetAvailableMovements(max);
         }
 
         /// <summary>

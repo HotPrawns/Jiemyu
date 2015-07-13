@@ -8,7 +8,7 @@
     <ProjectGuid>{C597B052-47AB-40BA-8C99-D1EB8292CB74}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dll</RootNamespace>
+    <RootNamespace>JiemyuDll</RootNamespace>
     <AssemblyName>Dll</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
@@ -41,12 +41,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Entities\Behaviors\AttackBehavior.cs" />
     <Compile Include="Entities\Behaviors\Attack\AttackBehavior.cs" />
     <Compile Include="Entities\Behaviors\Attack\MoveAttack.cs" />
-    <Compile Include="Entities\Behaviors\CustomMoveBehavior.cs" />
-    <Compile Include="Entities\Behaviors\MoveAttack.cs" />
-    <Compile Include="Entities\Behaviors\MoveBehavior.cs" />
     <Compile Include="Entities\Behaviors\Move\CustomMoveBehavior.cs" />
     <Compile Include="Entities\Behaviors\Move\MoveBehavior.cs" />
     <Compile Include="Entities\Chess\Bishop.cs" />
@@ -59,9 +55,9 @@
     <Compile Include="Entities\Jiemyu\PansyC.cs" />
     <Compile Include="Entities\Jiemyu\SoldierA.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Map\Move.cs" />
-    <Compile Include="Map\MoveCalculator.cs" />
-    <Compile Include="Map\MoveList.cs" />
+    <Compile Include="Entities\Behaviors\Move\ChessMove.cs" />
+    <Compile Include="Entities\Behaviors\Move\Move.cs" />
+    <Compile Include="Entities\Behaviors\Move\MoveCalculator.cs" />
     <Compile Include="Map\RenderObject.cs" />
     <Compile Include="Map\Team.cs" />
     <Compile Include="Map\Tile.cs" />
