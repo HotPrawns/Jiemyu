@@ -205,6 +205,12 @@ namespace JiemyuDll.Entities.Behaviors.Move
                         continue;
                     }
 
+                    if (next == destination)
+                    {
+                        openPoints[next] = values;
+                        break;
+                    }
+
                     // H is calculated using the Manhatten method. Essentially, calculate the move cost from the proposed square
                     // to the destination square using only horizontal and vertical movements. 
                     values.H = (int)GetMoveCost(destination - next);
