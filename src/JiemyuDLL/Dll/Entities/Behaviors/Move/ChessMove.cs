@@ -6,19 +6,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace JiemyuDll.Map
+namespace JiemyuDll.Entities.Behaviors.Move
 {
     /// <summary>
     /// Provides a convenient wrapper for representing a move option
     /// </summary>
-    public class Move
+    public class ChessMove
     {
-        /// <summary>
-        /// Vector that represents the move in map coordinates
-        /// +y = down (on map)
-        /// +x = right (on map)
-        /// </summary>
-        public Vector2 Vector { get; private set; }
+        float X { get; set; }
+        float Y { get; set; }
 
         /// <summary>
         /// Vector that represents 1 step in the direction of the move
@@ -30,8 +26,8 @@ namespace JiemyuDll.Map
             {
                 if (_Direction == null)
                 {
-                    float x = (Vector.X == 0) ? 0 : Vector.X / Math.Abs(Vector.X);
-                    float y = (Vector.Y == 0) ? 0 : Vector.Y / Math.Abs(Vector.Y);
+                    float x = (this.X == 0) ? 0 : this.X / Math.Abs(this.X);
+                    float y = (this.Y == 0) ? 0 : this.Y / Math.Abs(this.Y);
 
                     _Direction = new Vector2(x, y);
                 }
@@ -49,16 +45,16 @@ namespace JiemyuDll.Map
             {
                 if (_Distance == null)
                 {
-                    if (Vector.X != 0)
+                    if (this.X != 0)
                     {
                         // For now, just assume that diagonals are treated as one unit.
                         // Thus, if Vector.X and Vector.Y are both non-zero, just use the
                         // x component
-                        _Distance = (uint)Math.Abs(Vector.X);
+                        _Distance = (uint)Math.Abs(this.X);
                     }
                     else
                     {
-                        _Distance = (uint)Math.Abs(Vector.Y);
+                        _Distance = (uint)Math.Abs(this.Y);
                     }
 
                 }
@@ -67,14 +63,16 @@ namespace JiemyuDll.Map
             }
         }
 
-        public Move(Vector2 vector)
+        public ChessMove(Vector2 vector)
         {
-            Vector = vector;
+            this.X = vector.X;
+            this.Y = vector.Y;
         }
 
-        public Move(Vector2 vector, MoveBehavior.MoveCapabilities moveCapabilities)
+        public ChessMove(Vector2 vector, MoveBehavior.MoveCapabilities moveCapabilities)
         {
-            Vector = vector;
+            this.X = vector.X;
+            this.Y = vector.Y;
             this.moveCapabilities = moveCapabilities;
         }
 
@@ -93,11 +91,11 @@ namespace JiemyuDll.Map
             // If an entity can jump, just check the end points
             if (this.moveCapabilities.HasFlag(MoveBehavior.MoveCapabilities.Jump))
             {
-                return relativePoint == Vector;
+                return relativePoint == new Vector2(this.X, this.Y);
             }
 
-            bool inX = InRange(Vector.X, relativePoint.X);
-            bool inY = InRange(Vector.Y, relativePoint.Y);
+            bool inX = InRange(this.X, relativePoint.X);
+            bool inY = InRange(this.Y, relativePoint.Y);
             bool inMove = (inX && inY);
             
             if (relativePoint.X != 0 && relativePoint.Y != 0)
@@ -142,36 +140,9 @@ namespace JiemyuDll.Map
             return InMove(newPoint);
         }
 
-        public bool SameDirection(Move newMove)
+        public bool SameDirection(ChessMove newMove)
         {
             return (newMove.DirectionalVector.X == DirectionalVector.X) && (newMove.DirectionalVector.Y == DirectionalVector.Y);
-        }
-
-        public static Vector2 ToMapDirection(Vector2 direction, Vector2 forward)
-        {
-            // Don't allow for diagonal facing
-            Debug.Assert((forward.X != 0) ^ (forward.Y != 0));
-
-            // Facing down (+y)
-            if (forward.Y > 0)
-            {
-                return new Vector2(-1 * direction.X, direction.Y);
-            }
-            // Facing up (-y)
-            else if (forward.Y < 0)
-            {
-                return new Vector2(direction.X, -1 * direction.Y);
-            }
-            // Facing right (+x)
-            else if (forward.X > 0)
-            {
-                return new Vector2(direction.Y, direction.X);
-            }
-            // Facing left (-x)
-            else
-            {
-                return new Vector2(-1 * direction.Y, -1 * direction.X);
-            }
         }
     }
 }

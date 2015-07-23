@@ -7,6 +7,7 @@ using Jiemyu.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using JiemyuDll.Entities.Behaviors.Move;
 
 namespace Jiemyu.Map
 {
@@ -19,6 +20,8 @@ namespace Jiemyu.Map
 
         public Texture2D MoveIndicator { get; set; }
         public Texture2D AttackIndicator { get; set; }
+
+        List<Move> possibleMoves;
 
         public MapObject(Tile[,] tiles) : base(tiles)
         {
@@ -51,20 +54,17 @@ namespace Jiemyu.Map
         private void MouseClicked(MouseProcessor processor)
         {
             bool isAction = false;
-            if (moveCalculator != null)
+            if (possibleMoves != null && possibleMoves.Any(p => p.Contains(currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
             {
-                if (moveCalculator.GetAvailableMoves().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
-                {
-                    MoveEntity(currentPosition);
-                    isAction = true;
-                }
-                else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null
-                    && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
-                {
-                    AttackEntity(currentPosition);
-                    isAction = true;
-                }
+                MoveEntity(currentPosition);
+                isAction = true;
             }
+            //else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null
+            //    && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+            //{
+            //    AttackEntity(currentPosition);
+            //    isAction = true;
+            //}
 
             if (!isAction)
             {
@@ -104,13 +104,11 @@ namespace Jiemyu.Map
 
                 // Update the selected entity
                 selectedEntity = GetEntityFor(selectedPosition);
-
-                // If selection updated in some way, then update the moveCalculator
-                moveCalculator = new MoveCalculator(selectedEntity, this);
             }
 
-            var possibleMoves = (moveCalculator == null) ? new MoveList() : moveCalculator.GetAvailableMoves();
-            var attackMoves = (moveCalculator == null) ? new MoveList() : moveCalculator.GetAvailableAttackLocations();
+            possibleMoves = MoveCalculator.GetMoves(selectedEntity, this);
+            //var attackMoves = (moveCalculator == null) ? new MoveList() : moveCalculator.GetAvailableAttackLocations();
+            List<Move> attackMoves = new List<Move>();
 
             for (var x = 0; x < Width; x++)
             {
@@ -137,11 +135,11 @@ namespace Jiemyu.Map
                         batch.Draw(decal, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
 
-                    if (possibleMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))))
+                    if (possibleMoves.Any<Move>(move => move.Contains(new Vector2(x, y))))
                     {
                         batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
-                    else if (attackMoves.Any(move => move.InMove(CurrentSelectedPosition, new Vector2(x, y))) && GetEntityFor(new Vector2(x, y)) != null)
+                    else if (attackMoves.Any<Move>(move => move.Contains(new Vector2(x, y))) && GetEntityFor(new Vector2(x, y)) != null)
                     {
                         batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.IndianRed);
                     }

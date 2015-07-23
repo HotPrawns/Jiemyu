@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using JiemyuDll.Entities;
 using System.Collections.Generic;
-using JiemyuDll.Map;
+using Jiemyu.Map;
 using Jiemyu.GameState;
 
 namespace Jiemyu

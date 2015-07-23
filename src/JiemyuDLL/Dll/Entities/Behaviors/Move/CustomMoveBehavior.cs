@@ -15,7 +15,7 @@ namespace JiemyuDll.Entities.Behaviors.Move
             this.availablePoints = availablePoints;
         }
 
-        public override Vector2[] GetAvailableMovements(int max)
+        public override Vector2[] GetPossibleMovements()
         {
             return this.availablePoints;
         }
