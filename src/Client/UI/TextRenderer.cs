@@ -54,7 +54,7 @@ namespace Jiemyu.UI
                 FontChar fc;
                 if (characterMap.TryGetValue(c, out fc))
                 {
-                    var sourceRectangle = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
+                    var sourceRectangle = MeasureChar(c);
                     var position = new Vector2(dx + fc.XOffset, dy + fc.YOffset);
 
                     spriteBatch.Draw(texture, position, sourceRectangle, Color.White);
@@ -120,7 +120,9 @@ namespace Jiemyu.UI
         internal Rectangle MeasureChar(char c)
         {
             FontChar fc = characterMap[c];
-            return new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
+            // Use XAdvance over height, since that indicates the advancement
+            // before the next letter to be shown
+            return new Rectangle(fc.X, fc.Y, fc.XAdvance, fc.Height);
         }
     }
 }
