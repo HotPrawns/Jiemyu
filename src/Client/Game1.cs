@@ -35,6 +35,12 @@ namespace Jiemyu
         protected override void Initialize()
         {
             this.IsMouseVisible = true;
+
+            // Initialize the mouse
+            var mouse = new Input.TheMouse(this);
+            Input.TheMouse.SetInstance(mouse);
+            this.Components.Add(mouse);
+
             base.Initialize();
         }
 
@@ -81,6 +87,11 @@ namespace Jiemyu
             }
 
             GameStateManager.Instance.Update();
+
+            if (GameStateManager.Instance.CurrentState == GameStates.Exit)
+            {
+                this.Exit();
+            }
         }
 
         /// <summary>

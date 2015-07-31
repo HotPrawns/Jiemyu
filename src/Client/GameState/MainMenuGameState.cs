@@ -1,5 +1,6 @@
 ﻿using Jiemyu.UI;
 using Jiemyu.UI.Menus;
+using Jiemyu.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -21,6 +22,8 @@ namespace Jiemyu.GameState
 
         Texture2D highlightTexture;
         Texture2D backgroundTexture;
+
+        EventList eventList = new EventList();
 
         public MainMenuGameState(Game game)
             : base(game)
@@ -56,7 +59,7 @@ namespace Jiemyu.GameState
             backgroundTexture = Game.Content.Load<Texture2D>("Black");
             highlightTexture = Game.Content.Load<Texture2D>("Menu Highlight");
             menu = new MenuComponent(Game, spriteBatch, textRenderer, backgroundTexture, highlightTexture, menuItems);
-            menu.ItemSelected += menu_ItemSelected;
+            eventList.Add(MenuComponent.ItemSelectedEvent.Subscribe(menu, new MenuComponent.ItemSelectedHandler(menu_ItemSelected)));
         }
 
         /// <summary>
@@ -64,11 +67,15 @@ namespace Jiemyu.GameState
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void menu_ItemSelected(object sender, EventArgs e)
+        void menu_ItemSelected(MenuComponent sender, int index)
         {
-            if (menu.SelectedIndex == 0)
+            if (index == 0)
             {
                 GameStateManager.Instance.SetState(GameStates.InGame);
+            }
+            else if (index == 1)
+            {
+                GameStateManager.Instance.SetState(GameStates.Exit);
             }
         }
 
