@@ -17,10 +17,13 @@ namespace Jiemyu.UI.Menus
         int selectedIndex;
 
         Color normal = Color.White;
-        Color hilite = Color.Yellow;
+        Color highlight = Color.Yellow;
 
         KeyboardState keyboardState;
         KeyboardState oldKeyboardState;
+
+        MouseState oldMouseState;
+        MouseState mouseState;
 
         SpriteBatch spriteBatch;
         TextRenderer textRenderer;
@@ -29,8 +32,12 @@ namespace Jiemyu.UI.Menus
         Texture2D highlightTexture;
 
         Vector2 position;
-        float width = 0f;
-        float height = 0f;
+        Rectangle surroundingRect = new Rectangle();
+        Rectangle paddedRect = new Rectangle();
+
+        const int padding = 10;
+
+        int menuItemHeight = 0;
 
         public event EventHandler ItemSelected = new EventHandler((e, a) => { });
 
@@ -75,19 +82,25 @@ namespace Jiemyu.UI.Menus
 
         private void MeasureMenu()
         {
-            height = 0;
-            width = 0;
+            surroundingRect.Width = 0;
+            surroundingRect.Height = 0;
+
             foreach (string item in menuItems)
             {
                 Vector2 size = textRenderer.MeasureString(item);
-                if (size.X > width)
-                    width = size.X;
-                height += textRenderer.LineSpacing + LinePadding;
+                if (size.X > surroundingRect.Width)
+                    surroundingRect.Width = (int) size.X;
+                surroundingRect.Height += textRenderer.LineSpacing + LinePadding;
+                menuItemHeight = Math.Max(menuItemHeight, textRenderer.LineSpacing + LinePadding);
             }
 
             position = new Vector2(
-                (Game.Window.ClientBounds.Width - width) / 2,
-                (Game.Window.ClientBounds.Height - height) / 2);
+                (Game.Window.ClientBounds.Width - surroundingRect.Width) / 2,
+                (Game.Window.ClientBounds.Height - surroundingRect.Height) / 2);
+
+            paddedRect = surroundingRect;
+            paddedRect.Width += padding * 2;
+            paddedRect.Height += padding * 2;
         }
 
         public override void Initialize()
@@ -99,6 +112,11 @@ namespace Jiemyu.UI.Menus
         {
             return keyboardState.IsKeyUp(theKey) &&
                 oldKeyboardState.IsKeyDown(theKey);
+        }
+
+        private bool CheckMouseButton(ButtonState newState, ButtonState oldState)
+        {
+            return (newState == ButtonState.Released) && (oldState == ButtonState.Pressed);
         }
 
         public override void Update(GameTime gameTime)
@@ -118,13 +136,26 @@ namespace Jiemyu.UI.Menus
                     selectedIndex = menuItems.Length - 1;
             }
 
-            if (CheckKey(Keys.Enter))
+            // Check if the mouse is over any of the menu items
+            mouseState = Mouse.GetState();
+
+            if (mouseState.X >= (position.X + padding) && mouseState.X <= (position.X + paddedRect.Width) &&
+                mouseState.Y >= (position.Y + padding) && mouseState.Y <= (position.Y + paddedRect.Height))
+            {
+                // Find the menu item based on the y value
+                var mouseY = (mouseState.Y - (position.Y + padding));
+                selectedIndex = (int)Math.Floor(mouseY / menuItemHeight);
+            }
+
+            // Always do selection after movemenet, to ensure we never have an odd race between keyboard and mouse
+            if (CheckKey(Keys.Enter) || CheckMouseButton(mouseState.LeftButton, oldMouseState.LeftButton))
             {
                 ItemSelected(this, new EventArgs());
             }
 
             base.Update(gameTime);
 
+            oldMouseState = mouseState;
             oldKeyboardState = keyboardState;
         }
 
@@ -132,24 +163,29 @@ namespace Jiemyu.UI.Menus
         {
             base.Draw(gameTime);
             Vector2 location = position;
-            Texture2D texture;
+
+            // Draw the background
+            Vector2 backgroundLocation = location;
+            backgroundLocation.X -= padding;
+            backgroundLocation.Y -= padding; 
+            spriteBatch.Draw(backgroundTexture, backgroundLocation, paddedRect, Color.White);
+
 
             for (int i = 0; i < menuItems.Length; i++)
             {
-                if (i == selectedIndex)
-                    texture = highlightTexture;
-                else
-                    texture = backgroundTexture;
-
                 Rectangle rect = textRenderer.MeasureStringRect(menuItems[i]);
-                rect.Location = new Point((int) location.X, (int) location.Y);
-
-                spriteBatch.Draw(texture, rect, Color.White);
+                rect.Location = new Point((int)location.X, (int)location.Y);
 
                 textRenderer.DrawText(spriteBatch,
-                    (int) location.X,
-                    (int) location.Y,
+                    (int)location.X,
+                    (int)location.Y,
                     menuItems[i]);
+
+                // Always draw over text, since it has black on the background
+                if (i == selectedIndex)
+                {
+                    spriteBatch.Draw(highlightTexture, new Rectangle((int) backgroundLocation.X, rect.Location.Y-5, paddedRect.Width, rect.Height*2 + 5), Color.White);
+                }
 
                 location.Y += textRenderer.LineSpacing + LinePadding;
             }

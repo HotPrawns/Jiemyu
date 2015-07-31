@@ -53,8 +53,8 @@ namespace Jiemyu.GameState
         /// </summary>
         override protected void LoadContent()
         {
-            backgroundTexture = Game.Content.Load<Texture2D>("Brown Block");
-            highlightTexture = Game.Content.Load<Texture2D>("Dirt Block");
+            backgroundTexture = Game.Content.Load<Texture2D>("Black");
+            highlightTexture = Game.Content.Load<Texture2D>("Menu Highlight");
             menu = new MenuComponent(Game, spriteBatch, textRenderer, backgroundTexture, highlightTexture, menuItems);
             menu.ItemSelected += menu_ItemSelected;
         }
