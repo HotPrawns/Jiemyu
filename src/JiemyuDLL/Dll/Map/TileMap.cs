@@ -32,6 +32,7 @@ namespace JiemyuDll.Map
 
         protected Vector2 cameraPosition;
         protected Vector2 selectedPosition;
+        protected String selectionMode;
         protected Vector2 currentPosition;
 
         protected Entity selectedEntity;
@@ -123,9 +124,6 @@ namespace JiemyuDll.Map
             if (targetEntity.HitPoints <= 0)
             {
                 PlacedObjects.Remove(PlacedObjects.Find(r => r.Entity == targetEntity));
-
-                // For chess, attacks move everything into the space. So update the selectedEntity
-                MoveEntity(position);
             }
         }
 

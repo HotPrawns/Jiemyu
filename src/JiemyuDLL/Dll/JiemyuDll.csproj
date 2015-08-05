@@ -41,7 +41,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Behaviors\Attack\Attack.cs" />
     <Compile Include="Entities\Behaviors\Attack\AttackBehavior.cs" />
+    <Compile Include="Entities\Behaviors\Attack\AttackCalculator.cs" />
     <Compile Include="Entities\Behaviors\Attack\MoveAttack.cs" />
     <Compile Include="Entities\Behaviors\Move\CustomMoveBehavior.cs" />
     <Compile Include="Entities\Behaviors\Move\MoveBehavior.cs" />
