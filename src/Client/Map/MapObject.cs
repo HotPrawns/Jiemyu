@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using JiemyuDll.Entities.Behaviors.Move;
 using Jiemyu.Util;
+using JiemyuDll.Entities.Behaviors.Attack;
 
 namespace Jiemyu.Map
 {
@@ -20,13 +21,16 @@ namespace Jiemyu.Map
         public Texture2D AttackIndicator { get; set; }
 
         List<Move> possibleMoves;
+        List<Attack> possibleAttacks;
 
         EventList eventHandlers = new EventList();
 
         public MapObject(Tile[,] tiles) : base(tiles)
         {
             // Set up any mouse related event handlers
-            eventHandlers.Add(MouseButton.PressedEvent.Subscribe(TheMouse.Instance().LeftButton, new MouseButtonChanged(MouseClicked)));
+            eventHandlers.Add(MouseButton.PressedEvent.Subscribe(TheMouse.Instance().LeftButton, new MouseButtonChanged(MouseLeftClicked)));
+            eventHandlers.Add(MouseButton.PressedEvent.Subscribe(TheMouse.Instance().RightButton, new MouseButtonChanged(MouseRightClicked)));
+
         }
 
         /// <summary>
@@ -51,13 +55,27 @@ namespace Jiemyu.Map
         /// 
         /// </summary>
         /// <param name="processor"></param>
-        private void MouseClicked(MouseButton button)
+        private void MouseLeftClicked(MouseButton button)
         {
             bool isAction = false;
-            if (possibleMoves != null && possibleMoves.Any(p => p.Contains(currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+            if (selectionMode == SelectionModes.Move)
             {
-                MoveEntity(currentPosition);
-                isAction = true;
+                if (possibleMoves != null && possibleMoves.Any(p => p.Contains(currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+                {
+                    MoveEntity(currentPosition);
+                    isAction = true;
+                    selectionMode = SelectionModes.None;
+                }
+            }
+
+            if (selectionMode == SelectionModes.Attack)
+            {
+                if (possibleAttacks != null && possibleAttacks.Any(p => p.TargetSpace == currentPosition) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+                {
+                    AttackEntity(selectedEntity, possibleAttacks.Find(f => f.TargetSpace == currentPosition));
+                    isAction = true;
+                    selectionMode = SelectionModes.None;
+                }
             }
             //else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null
             //    && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
@@ -69,6 +87,53 @@ namespace Jiemyu.Map
             if (!isAction)
             {
                 selectedPosition = currentPosition;
+                selectionMode = SelectionModes.Move;
+            }
+            else
+            {
+                TurnManager.Instance.AdvanceTurn();
+            }
+
+            selectionUpdated = true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="processor"></param>
+        private void MouseRightClicked(MouseButton button)
+        {
+            bool isAction = false;
+            if (selectionMode == SelectionModes.Move)
+            {
+                if (possibleMoves != null && possibleMoves.Any(p => p.Contains(currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+                {
+                    MoveEntity(currentPosition);
+                    isAction = true;
+                    selectionMode = SelectionModes.None;
+                }
+            }
+
+            if (selectionMode == SelectionModes.Attack)
+            {
+                if (possibleAttacks != null && possibleAttacks.Any(p => p.TargetSpace == currentPosition) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+                {
+                    AttackEntity(selectedEntity, possibleAttacks.Find(f => f.TargetSpace == currentPosition));
+                    isAction = true;
+                    selectionMode = SelectionModes.None;
+                }
+            }
+            //else if (moveCalculator.GetAvailableAttackLocations().Any(p => p.InMove(CurrentSelectedPosition, currentPosition)) && GetEntityFor(currentPosition) != null
+            //    && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
+            //{
+            //    AttackEntity(currentPosition);
+            //    isAction = true;
+            //}
+
+            if (!isAction)
+            {
+                selectedPosition = currentPosition;
+                selectionMode = SelectionModes.Attack;
             }
             else
             {
@@ -105,9 +170,22 @@ namespace Jiemyu.Map
                 selectedEntity = GetEntityFor(selectedPosition);
             }
 
-            possibleMoves = MoveCalculator.GetMoves(selectedEntity, this);
-            //var attackMoves = (moveCalculator == null) ? new MoveList() : moveCalculator.GetAvailableAttackLocations();
-            List<Move> attackMoves = new List<Move>();
+            switch (selectionMode)
+            {
+                case SelectionModes.Move:
+                    possibleMoves = MoveCalculator.GetMoves(selectedEntity, this);
+                    possibleAttacks = new List<Attack>();
+                    break;
+                case SelectionModes.Attack:
+                    possibleAttacks = AttackCalculator.GetAttacks(selectedEntity, this);
+                    possibleMoves = new List<Move>();
+                    break;
+                default:
+                    possibleMoves = new List<Move>();
+                    possibleAttacks = new List<Attack>();
+                    break;
+
+            }
 
             for (var x = 0; x < Width; x++)
             {
@@ -138,7 +216,7 @@ namespace Jiemyu.Map
                     {
                         batch.Draw(MoveIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.White);
                     }
-                    else if (attackMoves.Any<Move>(move => move.Contains(new Vector2(x, y))) && GetEntityFor(new Vector2(x, y)) != null)
+                    else if (possibleAttacks.Any<Attack>(attack => attack.TargetSpace == new Vector2(x, y)))
                     {
                         batch.Draw(AttackIndicator, new Rectangle(left, top2, TILEWIDTH, TILEHEIGHT), Color.IndianRed);
                     }

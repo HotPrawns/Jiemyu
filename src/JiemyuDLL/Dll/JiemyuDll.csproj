@@ -41,7 +41,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Behaviors\Attack\Attack.cs" />
     <Compile Include="Entities\Behaviors\Attack\AttackBehavior.cs" />
+    <Compile Include="Entities\Behaviors\Attack\AttackCalculator.cs" />
     <Compile Include="Entities\Behaviors\Attack\MoveAttack.cs" />
     <Compile Include="Entities\Behaviors\Move\CustomMoveBehavior.cs" />
     <Compile Include="Entities\Behaviors\Move\MoveBehavior.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Entities\Behaviors\Move\ChessMove.cs" />
     <Compile Include="Entities\Behaviors\Move\Move.cs" />
     <Compile Include="Entities\Behaviors\Move\MoveCalculator.cs" />
+    <Compile Include="Map\DamageCalculator.cs" />
     <Compile Include="Map\RenderObject.cs" />
     <Compile Include="Map\Team.cs" />
     <Compile Include="Map\Tile.cs" />

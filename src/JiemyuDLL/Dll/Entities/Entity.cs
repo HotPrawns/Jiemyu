@@ -80,13 +80,33 @@ namespace JiemyuDll.Entities
         }
 
         /// <summary>
-        /// Attacks another entity.
+        /// How far an entity can attack, based on AttackBehavior
         /// </summary>
-        /// <param name="targetEntity"></param>
-        public void Attack(Entity targetEntity)
+        public uint AttackRange
         {
-            // For now do a simple calculation for damage
-            targetEntity.HitPoints = (int) (targetEntity.HitPoints - this.AttackBehavior.Damage);
+            get
+            {
+                return _AttackBehavior.Range;
+            }
+            set
+            {
+                _AttackBehavior.Range = value;
+            }
+        }
+
+        /// <summary>
+        /// How far an entity can attack, based on AttackBehavior
+        /// </summary>
+        public uint AttackDamage
+        {
+            get
+            {
+                return _AttackBehavior.Damage;
+            }
+            set
+            {
+                _AttackBehavior.Damage = value;
+            }
         }
     }
 }
