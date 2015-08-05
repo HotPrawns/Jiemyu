@@ -10,7 +10,8 @@ namespace Jiemyu.GameState
     {
         Uninitialized,
         MainMenu,
-        InGame
+        InGame,
+        Exit
     }
 
     class GameStateManager

@@ -8,14 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using JiemyuDll.Entities.Behaviors.Move;
+using Jiemyu.Util;
 
 namespace Jiemyu.Map
 {
     class MapObject : TileMap
     {
-        private MouseProcessor mouseProcessor = new MouseProcessor();
-
-
         public Texture2D HighlightTexture;
 
         public Texture2D MoveIndicator { get; set; }
@@ -23,10 +21,12 @@ namespace Jiemyu.Map
 
         List<Move> possibleMoves;
 
+        EventList eventHandlers = new EventList();
+
         public MapObject(Tile[,] tiles) : base(tiles)
         {
             // Set up any mouse related event handlers
-            mouseProcessor.Clicked += new MouseEventHandler(MouseClicked);
+            eventHandlers.Add(MouseButton.PressedEvent.Subscribe(TheMouse.Instance().LeftButton, new MouseButtonChanged(MouseClicked)));
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Jiemyu.Map
         /// 
         /// </summary>
         /// <param name="processor"></param>
-        private void MouseClicked(MouseProcessor processor)
+        private void MouseClicked(MouseButton button)
         {
             bool isAction = false;
             if (possibleMoves != null && possibleMoves.Any(p => p.Contains(currentPosition)) && TurnManager.Instance.IsMyTurn(GetEntityFor(CurrentSelectedPosition)))
@@ -87,7 +87,6 @@ namespace Jiemyu.Map
             Point position = state.Position;
 
             currentPosition = GetTileForPoint(position);
-            mouseProcessor.Update(state);
         }
 
 

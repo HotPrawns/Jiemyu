@@ -42,7 +42,8 @@
     <Compile Include="GameState\GameStateManager.cs" />
     <Compile Include="GameState\InGameGameState.cs" />
     <Compile Include="GameState\MainMenuGameState.cs" />
-    <Compile Include="Input\MouseProcessor.cs" />
+    <Compile Include="Input\MouseButton.cs" />
+    <Compile Include="Input\TheMouse.cs" />
     <Compile Include="JiemyuAlphaInitializer.cs" />
     <Compile Include="Map\MapObject.cs" />
     <Compile Include="Network\Client.cs" />
@@ -53,6 +54,9 @@
     <Compile Include="UI\Menus\MenuComponent.cs" />
     <Compile Include="UI\Menus\MenuElement.cs" />
     <Compile Include="UI\TextRenderer.cs" />
+    <Compile Include="Util\EventList.cs" />
+    <Compile Include="Util\EventInfo.cs" />
+    <Compile Include="Util\Scope.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

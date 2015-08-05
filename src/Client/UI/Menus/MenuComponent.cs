@@ -8,10 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Storage;
+using Jiemyu.Input;
+using Jiemyu.Util;
 
 namespace Jiemyu.UI.Menus
 {
-    public class MenuComponent : DrawableGameComponent
+    class MenuComponent : DrawableGameComponent
     {
         string[] menuItems;
         int selectedIndex;
@@ -38,8 +40,15 @@ namespace Jiemyu.UI.Menus
         const int padding = 10;
 
         int menuItemHeight = 0;
+        bool mouseInMenu = false;
 
-        public event EventHandler ItemSelected = new EventHandler((e, a) => { });
+        EventList eventList = new EventList();
+
+        public delegate void ItemSelectedHandler(MenuComponent menu, int index);
+        public event ItemSelectedHandler ItemSelected;
+
+        public static readonly EventInfo<MenuComponent, ItemSelectedHandler> ItemSelectedEvent = new EventInfo<MenuComponent, ItemSelectedHandler>((menu, handler) => menu.ItemSelected += handler, (menu, handler) => menu.ItemSelected -= handler);
+
 
         public int SelectedIndex
         {
@@ -101,6 +110,33 @@ namespace Jiemyu.UI.Menus
             paddedRect = surroundingRect;
             paddedRect.Width += padding * 2;
             paddedRect.Height += padding * 2;
+
+            eventList.Add(TheMouse.MouseMoveEvent.Subscribe(TheMouse.Instance(), (Point newPoint) =>
+            {
+                if (InsideMenu(newPoint))
+                {
+                    mouseInMenu = true;
+                }
+            }));
+
+            eventList.Add(MouseButton.ClickedEvent.Subscribe(TheMouse.Instance().LeftButton, (MouseButton btn) =>
+            {
+                if (mouseInMenu)
+                {
+                    ItemSelected(this, SelectedIndex);
+                }
+            }));
+        }
+
+        /// <summary>
+        /// Says whether a point is located within the menu items
+        /// </summary>
+        /// <param name="newPoint"></param>
+        /// <returns></returns>
+        private bool InsideMenu(Point newPoint)
+        {
+            return newPoint.X >= (position.X + padding) && newPoint.X <= (position.X + paddedRect.Width) &&
+                newPoint.Y >= (position.Y + padding) && newPoint.Y <= (position.Y + paddedRect.Height);
         }
 
         public override void Initialize()
@@ -112,11 +148,6 @@ namespace Jiemyu.UI.Menus
         {
             return keyboardState.IsKeyUp(theKey) &&
                 oldKeyboardState.IsKeyDown(theKey);
-        }
-
-        private bool CheckMouseButton(ButtonState newState, ButtonState oldState)
-        {
-            return (newState == ButtonState.Released) && (oldState == ButtonState.Pressed);
         }
 
         public override void Update(GameTime gameTime)
@@ -148,9 +179,9 @@ namespace Jiemyu.UI.Menus
             }
 
             // Always do selection after movemenet, to ensure we never have an odd race between keyboard and mouse
-            if (CheckKey(Keys.Enter) || CheckMouseButton(mouseState.LeftButton, oldMouseState.LeftButton))
+            if (CheckKey(Keys.Enter))
             {
-                ItemSelected(this, new EventArgs());
+                ItemSelected(this, SelectedIndex);
             }
 
             base.Update(gameTime);
