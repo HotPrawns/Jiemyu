@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using JiemyuDll.Entities;
 using JiemyuDll.Entities.Behaviors.Move;
+using JiemyuDll.Entities.Behaviors.Attack;
 
 namespace JiemyuDll.Map
 {
@@ -17,6 +18,13 @@ namespace JiemyuDll.Map
         {
             map = tiles;
         }
+        
+        protected enum SelectionModes
+        {
+            None = 0x1,
+            Move = 0x2,
+            Attack = 0x4
+        };
 
         protected const int TILEHEIGHT = 171;
         protected const int TILEWIDTH = 101;
@@ -33,6 +41,7 @@ namespace JiemyuDll.Map
         protected Vector2 cameraPosition;
         protected Vector2 selectedPosition;
         protected Vector2 currentPosition;
+        protected SelectionModes selectionMode;
 
         protected Entity selectedEntity;
 
@@ -109,23 +118,20 @@ namespace JiemyuDll.Map
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        protected void AttackEntity(Vector2 position)
+        protected void AttackEntity(Entity performer, Attack attack)
         {
-            var targetEntity = GetEntityFor(position);
+            var targetEntity = GetEntityFor(attack.TargetSpace);
 
             if (targetEntity == null)
             {
                 return;
             }
 
-            selectedEntity.Attack(targetEntity);
+            DamageCalculator.performAttack(performer, targetEntity, attack);
 
             if (targetEntity.HitPoints <= 0)
             {
                 PlacedObjects.Remove(PlacedObjects.Find(r => r.Entity == targetEntity));
-
-                // For chess, attacks move everything into the space. So update the selectedEntity
-                MoveEntity(position);
             }
         }
 
